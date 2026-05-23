@@ -1,0 +1,69 @@
+/**
+ * moodState 단위 테스트.
+ *
+ * 회귀 차단 대상:
+ *  - DEFAULT_MOOD 의 모든 키 존재 (sub-step 추가 시 누락 차단)
+ *  - HDR_URL 매핑이 EnvHdrFile union 과 정합 (1k → 2k path 교체 시 검증)
+ *  - 텍스쳐 path 가 frontend/public 기준 URL 형식
+ */
+import { describe, it, expect } from 'vitest';
+import {
+  DEFAULT_MOOD,
+  HDR_URL,
+  type MoodState,
+  type EnvHdrFile,
+} from './moodState';
+
+describe('moodState', () => {
+  it('DEFAULT_MOOD 모든 키 정의', () => {
+    const requiredKeys: Array<keyof MoodState> = [
+      'wallColor', 'roughness', 'metalness',
+      'wallTexture', 'floorTexture', 'ceilingTexture', 'textureRepeat',
+      'clearcoat', 'clearcoatRoughness',
+      'sheen', 'sheenColor', 'sheenRoughness',
+      'transmission', 'thickness', 'ior',
+      'env',
+      'ambientIntensity',
+      'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',
+      'toneMapping', 'exposure',
+    ];
+    for (const k of requiredKeys) {
+      expect(DEFAULT_MOOD).toHaveProperty(k);
+    }
+  });
+
+  it('DEFAULT_MOOD 의 숫자 범위 유효', () => {
+    expect(DEFAULT_MOOD.roughness).toBeGreaterThanOrEqual(0);
+    expect(DEFAULT_MOOD.roughness).toBeLessThanOrEqual(1);
+    expect(DEFAULT_MOOD.metalness).toBeGreaterThanOrEqual(0);
+    expect(DEFAULT_MOOD.metalness).toBeLessThanOrEqual(1);
+    expect(DEFAULT_MOOD.clearcoat).toBeGreaterThanOrEqual(0);
+    expect(DEFAULT_MOOD.clearcoat).toBeLessThanOrEqual(1);
+    expect(DEFAULT_MOOD.transmission).toBeGreaterThanOrEqual(0);
+    expect(DEFAULT_MOOD.transmission).toBeLessThanOrEqual(1);
+    expect(DEFAULT_MOOD.ior).toBeGreaterThanOrEqual(1.0);
+    expect(DEFAULT_MOOD.ior).toBeLessThanOrEqual(2.5);
+    expect(DEFAULT_MOOD.exposure).toBeGreaterThan(0);
+  });
+
+  it('HDR_URL 의 모든 키가 EnvHdrFile union 과 정합', () => {
+    const keys: EnvHdrFile[] = [
+      'studio_small_03_1k',
+      'lebombo_1k',
+      'kloofendal_48d_partly_cloudy_puresky_1k',
+    ];
+    for (const k of keys) {
+      expect(HDR_URL).toHaveProperty(k);
+      expect(HDR_URL[k]).toMatch(/^\/hdr\/.+\.hdr$/);
+    }
+  });
+
+  it('env source = preset OR hdr 의 discriminated union 정합', () => {
+    if (DEFAULT_MOOD.env.source === 'preset') {
+      expect(typeof DEFAULT_MOOD.env.key).toBe('string');
+    } else {
+      expect(DEFAULT_MOOD.env.source).toBe('hdr');
+      expect(HDR_URL).toHaveProperty(DEFAULT_MOOD.env.key);
+    }
+  });
+});
