@@ -292,6 +292,39 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         </div>
       </Section>
 
+      <Section title="9b · 조명 fixture 시각화 (Step 7.8 — 빛나는 mesh)">
+        <div className="space-y-3 border-l-2 border-yellow-300 pl-3">
+          <label className="flex items-center gap-2 text-xs text-slate-700">
+            <input
+              type="checkbox"
+              checked={state.showDownlightFixture}
+              onChange={(e) => patch({ showDownlightFixture: e.target.checked })}
+            />
+            다운라이트 disc (spotLight 위치)
+          </label>
+          <Slider
+            title="다운라이트 직경"
+            value={state.downlightDiameter_mm}
+            min={50}
+            max={400}
+            step={10}
+            onChange={(v) => patch({ downlightDiameter_mm: v })}
+            hint={`${state.downlightDiameter_mm}mm`}
+          />
+          <label className="flex items-center gap-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
+            <input
+              type="checkbox"
+              checked={state.showRectFixture}
+              onChange={(e) => patch({ showRectFixture: e.target.checked })}
+            />
+            면광원 패널 (rectArea 위치, rectArea ON 시만)
+          </label>
+          <p className="text-[10px] text-slate-500 leading-snug">
+            emissive material 로 발광. Bloom ON + 스냅샷 모드 (path tracer) 에서 가장 자연.
+          </p>
+        </div>
+      </Section>
+
       <Section title="9 · 면광원 다운라이트 (rectAreaLight — Step 4)">
         <div className="space-y-3 border-l-2 border-yellow-200 pl-3">
           <label className="flex items-center gap-2 text-xs text-slate-700">

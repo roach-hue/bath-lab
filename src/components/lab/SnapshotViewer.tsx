@@ -22,6 +22,7 @@ import * as THREE from 'three';
 import { WebGLPathTracer } from 'three-gpu-pathtracer';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import BathRoom from './BathRoom';
+import LightFixtures from './LightFixtures';
 import { MoodState, HDR_URL } from './moodState';
 import { BathDimensions } from './DimensionForm';
 import { computeCameraView } from './cameraPresets';
@@ -186,6 +187,28 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
               intensity={mood.rectAreaIntensity}
             />
           )}
+
+          {/* Step 7.8 — 조명 fixture (path tracer 가 emissive 자동 light source 인식) */}
+          <LightFixtures
+            h_mm={dims.h_mm}
+            downlight={{
+              show: mood.showDownlightFixture,
+              x_mm: mood.spotX_mm,
+              z_mm: mood.spotZ_mm,
+              diameter_mm: mood.downlightDiameter_mm,
+              color: mood.spotColor,
+              intensity: mood.spotIntensity,
+            }}
+            panel={{
+              show: mood.showRectFixture && mood.rectAreaEnabled,
+              x_mm: mood.rectAreaX_mm,
+              z_mm: mood.rectAreaZ_mm,
+              width_mm: mood.rectAreaWidth_mm,
+              height_mm: mood.rectAreaHeight_mm,
+              color: mood.rectAreaColor,
+              intensity: mood.rectAreaIntensity,
+            }}
+          />
 
           <BathRoom
             w_mm={dims.w_mm}

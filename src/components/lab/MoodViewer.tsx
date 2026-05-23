@@ -15,6 +15,7 @@ import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLigh
 // Step 4 — module 로드 시 1회 init. R3F + meshPhysical 와 호환.
 RectAreaLightUniformsLib.init();
 import BathRoom from './BathRoom';
+import LightFixtures from './LightFixtures';
 import MoodControls from './MoodControls';
 import { MoodState, HDR_URL } from './moodState';
 import { BathDimensions } from './DimensionForm';
@@ -161,6 +162,28 @@ export default function MoodViewer({ dims, mood, setMood, onBack, onSnapshot }: 
             displacement={{
               scale: mood.displacementScale,
               segments: mood.geometrySegments,
+            }}
+          />
+
+          {/* Step 7.8 — 조명 fixture 시각화 (천장 다운라이트 disc + 면광원 panel) */}
+          <LightFixtures
+            h_mm={dims.h_mm}
+            downlight={{
+              show: mood.showDownlightFixture,
+              x_mm: mood.spotX_mm,
+              z_mm: mood.spotZ_mm,
+              diameter_mm: mood.downlightDiameter_mm,
+              color: mood.spotColor,
+              intensity: mood.spotIntensity,
+            }}
+            panel={{
+              show: mood.showRectFixture && mood.rectAreaEnabled,
+              x_mm: mood.rectAreaX_mm,
+              z_mm: mood.rectAreaZ_mm,
+              width_mm: mood.rectAreaWidth_mm,
+              height_mm: mood.rectAreaHeight_mm,
+              color: mood.rectAreaColor,
+              intensity: mood.rectAreaIntensity,
             }}
           />
 

@@ -131,6 +131,10 @@ export type MoodState = {
   /** 카메라 시점 preset. corner=한 모서리에서 안쪽, frontal=입구→안쪽 정면,
    *  human=입구 정중앙 1.6m 사람 시점, top=부감 (천장 살짝 아래에서 아래로). */
   cameraPreset: 'corner' | 'frontal' | 'human' | 'top';
+  /** Step 7.8 — 조명 fixture 시각화 (mesh + emissive). 진짜 빛나는 발광체로 표시. */
+  showDownlightFixture: boolean; // spotLight 위치 원형 disc
+  downlightDiameter_mm: number;
+  showRectFixture: boolean; // rectAreaLight 위치 사각 panel
 };
 
 export const DEFAULT_MOOD: MoodState = {
@@ -213,4 +217,7 @@ export const DEFAULT_MOOD: MoodState = {
   snapshotResolution: '4k', // 시안 표준
   entranceWall: 'front', // 기본 = -Z 방향 (앞 벽). 진규님 변경 가능.
   cameraPreset: 'corner',
+  showDownlightFixture: true, // 천장 다운라이트 (spotLight 위치)
+  downlightDiameter_mm: 150, // 일반 다운라이트 표준
+  showRectFixture: true, // 천장 면광원 패널 (rectArea 위치)
 };

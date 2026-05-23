@@ -49,9 +49,10 @@ describe('moodState', () => {
       'ambientIntensity',
       'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',
       'toneMapping', 'exposure',
-      // Step 7 path tracer + camera preset
+      // Step 7 path tracer + camera preset + fixture
       'viewMode', 'pathTracerMaxSamples', 'pathTracerBounces', 'snapshotResolution',
       'entranceWall', 'cameraPreset',
+      'showDownlightFixture', 'downlightDiameter_mm', 'showRectFixture',
     ];
     for (const k of requiredKeys) {
       expect(DEFAULT_MOOD).toHaveProperty(k);
