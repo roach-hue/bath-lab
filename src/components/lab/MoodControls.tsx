@@ -98,25 +98,19 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
-      <Slider
-        title="2 · 거칠기 (roughness — 매트↔광택)"
-        value={state.roughness}
-        min={0}
-        max={1}
-        step={0.01}
-        onChange={(v) => patch({ roughness: v })}
-        hint={`${state.roughness.toFixed(2)}`}
-      />
-
-      <Slider
-        title="3 · 금속성 (metalness — 비금속↔금속)"
-        value={state.metalness}
-        min={0}
-        max={1}
-        step={0.01}
-        onChange={(v) => patch({ metalness: v })}
-        hint={`${state.metalness.toFixed(2)}`}
-      />
+      <Section title="2 · 거칠기 + 금속성 (면별 — roughness/metalness)">
+        <div className="space-y-3 border-l-2 border-slate-200 pl-3">
+          <div className="text-[10px] text-slate-500">[벽]</div>
+          <Slider title="거칠기" value={state.wallRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ wallRoughness: v })} hint={`${state.wallRoughness.toFixed(2)}`} />
+          <Slider title="금속성" value={state.wallMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ wallMetalness: v })} hint={`${state.wallMetalness.toFixed(2)}`} />
+          <div className="text-[10px] text-slate-500">[바닥]</div>
+          <Slider title="거칠기" value={state.floorRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ floorRoughness: v })} hint={`${state.floorRoughness.toFixed(2)}`} />
+          <Slider title="금속성" value={state.floorMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ floorMetalness: v })} hint={`${state.floorMetalness.toFixed(2)}`} />
+          <div className="text-[10px] text-slate-500">[천장]</div>
+          <Slider title="거칠기" value={state.ceilingRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ ceilingRoughness: v })} hint={`${state.ceilingRoughness.toFixed(2)}`} />
+          <Slider title="금속성" value={state.ceilingMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ ceilingMetalness: v })} hint={`${state.ceilingMetalness.toFixed(2)}`} />
+        </div>
+      </Section>
 
       <Section title="4 · 환경맵 (주변 반사용 — IBL)">
         <select
@@ -151,6 +145,17 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             ))}
           </optgroup>
         </select>
+        <div className="mt-2">
+          <Slider
+            title="환경맵 강도 (envMap intensity — IBL 영향)"
+            value={state.envIntensity}
+            min={0}
+            max={3}
+            step={0.05}
+            onChange={(v) => patch({ envIntensity: v })}
+            hint={`${state.envIntensity.toFixed(2)}`}
+          />
+        </div>
       </Section>
 
       <Slider
@@ -274,6 +279,42 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             step={0.01}
             onChange={(v) => patch({ ior: v })}
             hint={`${state.ior.toFixed(2)}`}
+          />
+          <Slider
+            title="방향성 반사 (anisotropy — 브러시드 메탈)"
+            value={state.anisotropy}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => patch({ anisotropy: v })}
+            hint={`${state.anisotropy.toFixed(2)}`}
+          />
+          <Slider
+            title="anisotropy 회전 (0 ~ 2π)"
+            value={state.anisotropyRotation}
+            min={0}
+            max={Math.PI * 2}
+            step={0.01}
+            onChange={(v) => patch({ anisotropyRotation: v })}
+            hint={`${state.anisotropyRotation.toFixed(2)}`}
+          />
+          <Slider
+            title="무지개빛 반사 (iridescence — CD/비누거품)"
+            value={state.iridescence}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => patch({ iridescence: v })}
+            hint={`${state.iridescence.toFixed(2)}`}
+          />
+          <Slider
+            title="iridescence IOR (얇은 막 굴절률)"
+            value={state.iridescenceIOR}
+            min={1.0}
+            max={2.5}
+            step={0.01}
+            onChange={(v) => patch({ iridescenceIOR: v })}
+            hint={`${state.iridescenceIOR.toFixed(2)}`}
           />
         </div>
       </Section>

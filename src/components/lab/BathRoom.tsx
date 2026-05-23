@@ -28,13 +28,14 @@ import {
 
 const MM = 0.001;
 
-export type BathRoomMaterial = {
+/** 면별 PBR 파라미터 (Phase 2-I — roughness/metalness 면별 독립). */
+export type FaceMat = {
   color: string;
   roughness: number;
   metalness: number;
 };
 
-/** Step 3 — meshPhysicalMaterial 의 확장 prop. 모든 face material 에 공통 적용. */
+/** Step 3 + Phase 2 — meshPhysicalMaterial 확장 prop. 모든 face material 공통. */
 export type PhysicalExtras = {
   clearcoat: number;
   clearcoatRoughness: number;
@@ -44,13 +45,23 @@ export type PhysicalExtras = {
   transmission: number;
   thickness: number;
   ior: number;
+  // Phase 2-A
+  anisotropy: number;
+  anisotropyRotation: number;
+  iridescence: number;
+  iridescenceIOR: number;
+  // Phase 2-E
+  envIntensity: number;
 };
 
 type Props = {
   w_mm: number;
   d_mm: number;
   h_mm: number;
-  material: BathRoomMaterial;
+  // Phase 2-I — 면별 base (벽/바닥/천장 독립)
+  wallMat: FaceMat;
+  floorMat: FaceMat;
+  ceilingMat: FaceMat;
   physical: PhysicalExtras;
   // Step 2 — 면별 텍스쳐 키
   wallTexture: TextureSetKey;
@@ -63,7 +74,9 @@ export default function BathRoom({
   w_mm,
   d_mm,
   h_mm,
-  material,
+  wallMat,
+  floorMat,
+  ceilingMat,
   physical,
   wallTexture,
   floorTexture,
@@ -76,20 +89,18 @@ export default function BathRoom({
 
   const geom = useMemo(() => new THREE.BoxGeometry(w, h, d), [w, h, d]);
 
-  const faceCommon = { base: material, physical, repeat: textureRepeat };
-
   return (
     <mesh geometry={geom} position={[0, h / 2, 0]} receiveShadow castShadow>
-      {/* 벽 4면 (0, 1, 4, 5) */}
-      <FaceMaterial attach="material-0" textureKey={wallTexture} {...faceCommon} />
-      <FaceMaterial attach="material-1" textureKey={wallTexture} {...faceCommon} />
-      {/* 천장 (2) */}
-      <FaceMaterial attach="material-2" textureKey={ceilingTexture} {...faceCommon} />
-      {/* 바닥 (3) */}
-      <FaceMaterial attach="material-3" textureKey={floorTexture} {...faceCommon} />
+      {/* 벽 4면 (0, 1, 4, 5) — wallMat */}
+      <FaceMaterial attach="material-0" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
+      <FaceMaterial attach="material-1" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
+      {/* 천장 (2) — ceilingMat */}
+      <FaceMaterial attach="material-2" textureKey={ceilingTexture} base={ceilingMat} physical={physical} repeat={textureRepeat} />
+      {/* 바닥 (3) — floorMat */}
+      <FaceMaterial attach="material-3" textureKey={floorTexture} base={floorMat} physical={physical} repeat={textureRepeat} />
       {/* 벽 4면 (계속) */}
-      <FaceMaterial attach="material-4" textureKey={wallTexture} {...faceCommon} />
-      <FaceMaterial attach="material-5" textureKey={wallTexture} {...faceCommon} />
+      <FaceMaterial attach="material-4" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
+      <FaceMaterial attach="material-5" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
     </mesh>
   );
 }
@@ -97,7 +108,7 @@ export default function BathRoom({
 type FaceMaterialProps = {
   attach: string;
   textureKey: TextureSetKey;
-  base: BathRoomMaterial;
+  base: FaceMat;
   physical: PhysicalExtras;
   repeat: number;
 };
@@ -118,6 +129,11 @@ function FaceMaterial({ attach, textureKey, base, physical, repeat }: FaceMateri
         transmission={physical.transmission}
         thickness={physical.thickness}
         ior={physical.ior}
+        anisotropy={physical.anisotropy}
+        anisotropyRotation={physical.anisotropyRotation}
+        iridescence={physical.iridescence}
+        iridescenceIOR={physical.iridescenceIOR}
+        envMapIntensity={physical.envIntensity}
         side={THREE.BackSide}
       />
     );
@@ -142,7 +158,7 @@ function TexturedFaceMaterial({
 }: {
   attach: string;
   set: TextureSet;
-  base: BathRoomMaterial;
+  base: FaceMat;
   physical: PhysicalExtras;
   repeat: number;
 }) {
@@ -181,6 +197,7 @@ function TexturedFaceMaterial({
       roughnessMap={textures.roughnessMap}
       aoMap={textures.aoMap}
       color={base.color}
+      roughness={base.roughness}
       metalness={base.metalness}
       clearcoat={physical.clearcoat}
       clearcoatRoughness={physical.clearcoatRoughness}
@@ -190,6 +207,11 @@ function TexturedFaceMaterial({
       transmission={physical.transmission}
       thickness={physical.thickness}
       ior={physical.ior}
+      anisotropy={physical.anisotropy}
+      anisotropyRotation={physical.anisotropyRotation}
+      iridescence={physical.iridescence}
+      iridescenceIOR={physical.iridescenceIOR}
+      envMapIntensity={physical.envIntensity}
       side={THREE.BackSide}
     />
   );

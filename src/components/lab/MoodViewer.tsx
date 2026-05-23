@@ -67,15 +67,25 @@ export default function MoodViewer({ dims, onBack }: Props) {
             shadow-mapSize-height={1024}
           />
 
-          {/* 화장실 공간 — Step 2 텍스쳐 + Step 3 physical material */}
+          {/* 화장실 공간 — Step 2 텍스쳐 + Step 3 physical + Phase 2 면별/anisotropy/envIntensity */}
           <BathRoom
             w_mm={dims.w_mm}
             d_mm={dims.d_mm}
             h_mm={dims.h_mm}
-            material={{
+            wallMat={{
               color: mood.wallColor,
-              roughness: mood.roughness,
-              metalness: mood.metalness,
+              roughness: mood.wallRoughness,
+              metalness: mood.wallMetalness,
+            }}
+            floorMat={{
+              color: mood.wallColor,
+              roughness: mood.floorRoughness,
+              metalness: mood.floorMetalness,
+            }}
+            ceilingMat={{
+              color: mood.wallColor,
+              roughness: mood.ceilingRoughness,
+              metalness: mood.ceilingMetalness,
             }}
             physical={{
               clearcoat: mood.clearcoat,
@@ -86,6 +96,11 @@ export default function MoodViewer({ dims, onBack }: Props) {
               transmission: mood.transmission,
               thickness: mood.thickness,
               ior: mood.ior,
+              anisotropy: mood.anisotropy,
+              anisotropyRotation: mood.anisotropyRotation,
+              iridescence: mood.iridescence,
+              iridescenceIOR: mood.iridescenceIOR,
+              envIntensity: mood.envIntensity,
             }}
             wallTexture={mood.wallTexture}
             floorTexture={mood.floorTexture}

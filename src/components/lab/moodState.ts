@@ -41,24 +41,36 @@ export const HDR_URL: Record<EnvHdrFile, string> = {
 export type ToneMappingMode = 'linear' | 'aces';
 
 export type MoodState = {
-  // 벽 (단색 + 공통 PBR 파라미터)
+  // 벽 색 (텍스쳐 multiply / 단색 fallback)
   wallColor: string;
-  roughness: number;
-  metalness: number;
+  // Phase 2-I — 면별 roughness / metalness 독립
+  wallRoughness: number;
+  wallMetalness: number;
+  floorRoughness: number;
+  floorMetalness: number;
+  ceilingRoughness: number;
+  ceilingMetalness: number;
   // Step 2 — 면별 PBR 텍스쳐 셋 + tiling
   wallTexture: TextureSetKey;
   floorTexture: TextureSetKey;
   ceilingTexture: TextureSetKey;
   textureRepeat: number; // tiling 반복 수 (1~10)
   // Step 3 — meshPhysicalMaterial 확장 prop
-  clearcoat: number; // 코팅 광택 (도자기 타일)
+  clearcoat: number;
   clearcoatRoughness: number;
-  sheen: number; // 패브릭 광택 (수건 등)
+  sheen: number;
   sheenColor: string;
   sheenRoughness: number;
-  transmission: number; // 투명 (유리 등)
-  thickness: number; // transmission 두께
-  ior: number; // 굴절률 (유리 표준 1.5)
+  transmission: number;
+  thickness: number;
+  ior: number;
+  // Phase 2-A — anisotropy + iridescence
+  anisotropy: number;
+  anisotropyRotation: number; // 0 ~ 2π
+  iridescence: number;
+  iridescenceIOR: number; // 1.0 ~ 2.5
+  // Phase 2-E — envMap intensity (IBL 영향 강약)
+  envIntensity: number;
   // 환경맵 (preset OR hdr 파일)
   env: EnvSelection;
   // 조명
@@ -75,8 +87,12 @@ export type MoodState = {
 
 export const DEFAULT_MOOD: MoodState = {
   wallColor: '#dddddd',
-  roughness: 0.4,
-  metalness: 0.0,
+  wallRoughness: 0.4,
+  wallMetalness: 0.0,
+  floorRoughness: 0.5,
+  floorMetalness: 0.0,
+  ceilingRoughness: 0.6,
+  ceilingMetalness: 0.0,
   wallTexture: 'red_brick_03',
   floorTexture: 'wood_planks',
   ceilingTexture: 'concrete_wall_004',
@@ -90,6 +106,13 @@ export const DEFAULT_MOOD: MoodState = {
   transmission: 0.0,
   thickness: 0.5,
   ior: 1.5,
+  // Phase 2-A 기본은 0 (효과 X)
+  anisotropy: 0.0,
+  anisotropyRotation: 0.0,
+  iridescence: 0.0,
+  iridescenceIOR: 1.3,
+  // Phase 2-E IBL 강도
+  envIntensity: 1.0,
   env: { source: 'hdr', key: 'studio_small_03_2k' },
   ambientIntensity: 0.6,
   spotX_mm: 0,

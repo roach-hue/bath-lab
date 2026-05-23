@@ -17,11 +17,19 @@ import {
 describe('moodState', () => {
   it('DEFAULT_MOOD 모든 키 정의', () => {
     const requiredKeys: Array<keyof MoodState> = [
-      'wallColor', 'roughness', 'metalness',
+      'wallColor',
+      // Phase 2-I 면별
+      'wallRoughness', 'wallMetalness',
+      'floorRoughness', 'floorMetalness',
+      'ceilingRoughness', 'ceilingMetalness',
       'wallTexture', 'floorTexture', 'ceilingTexture', 'textureRepeat',
       'clearcoat', 'clearcoatRoughness',
       'sheen', 'sheenColor', 'sheenRoughness',
       'transmission', 'thickness', 'ior',
+      // Phase 2-A
+      'anisotropy', 'anisotropyRotation', 'iridescence', 'iridescenceIOR',
+      // Phase 2-E
+      'envIntensity',
       'env',
       'ambientIntensity',
       'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',
@@ -33,16 +41,28 @@ describe('moodState', () => {
   });
 
   it('DEFAULT_MOOD 의 숫자 범위 유효', () => {
-    expect(DEFAULT_MOOD.roughness).toBeGreaterThanOrEqual(0);
-    expect(DEFAULT_MOOD.roughness).toBeLessThanOrEqual(1);
-    expect(DEFAULT_MOOD.metalness).toBeGreaterThanOrEqual(0);
-    expect(DEFAULT_MOOD.metalness).toBeLessThanOrEqual(1);
+    // Phase 2-I 면별 roughness/metalness
+    for (const k of ['wallRoughness', 'floorRoughness', 'ceilingRoughness'] as const) {
+      expect(DEFAULT_MOOD[k]).toBeGreaterThanOrEqual(0);
+      expect(DEFAULT_MOOD[k]).toBeLessThanOrEqual(1);
+    }
+    for (const k of ['wallMetalness', 'floorMetalness', 'ceilingMetalness'] as const) {
+      expect(DEFAULT_MOOD[k]).toBeGreaterThanOrEqual(0);
+      expect(DEFAULT_MOOD[k]).toBeLessThanOrEqual(1);
+    }
     expect(DEFAULT_MOOD.clearcoat).toBeGreaterThanOrEqual(0);
     expect(DEFAULT_MOOD.clearcoat).toBeLessThanOrEqual(1);
     expect(DEFAULT_MOOD.transmission).toBeGreaterThanOrEqual(0);
     expect(DEFAULT_MOOD.transmission).toBeLessThanOrEqual(1);
     expect(DEFAULT_MOOD.ior).toBeGreaterThanOrEqual(1.0);
     expect(DEFAULT_MOOD.ior).toBeLessThanOrEqual(2.5);
+    // Phase 2-A
+    expect(DEFAULT_MOOD.anisotropy).toBeGreaterThanOrEqual(0);
+    expect(DEFAULT_MOOD.anisotropy).toBeLessThanOrEqual(1);
+    expect(DEFAULT_MOOD.iridescence).toBeGreaterThanOrEqual(0);
+    expect(DEFAULT_MOOD.iridescence).toBeLessThanOrEqual(1);
+    // Phase 2-E
+    expect(DEFAULT_MOOD.envIntensity).toBeGreaterThan(0);
     expect(DEFAULT_MOOD.exposure).toBeGreaterThan(0);
   });
 
