@@ -163,7 +163,7 @@ export const DEFAULT_MOOD: MoodState = {
   bloomEnabled: true,
   bloomIntensity: 0.4,
   bloomThreshold: 0.85,
-  ssaoEnabled: true,  // 모서리 어두움 = 공간감 핵심
+  ssaoEnabled: false, // v3 NormalPass bug 로 임시 off — 후속 n8ao 교체 예정
   ssaoIntensity: 1.0,
   ssaoRadius: 0.25,
   ssrEnabled: false,  // SSR 은 GPU 부담 — 기본 OFF, 진규님이 켜면 활성

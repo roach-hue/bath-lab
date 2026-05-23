@@ -8,7 +8,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, SoftShadows, ContactShadows } from '@react-three/drei';
-import { EffectComposer, Bloom, SSAO } from '@react-three/postprocessing';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 
@@ -169,34 +169,23 @@ export default function MoodViewer({ dims, onBack }: Props) {
           />
 
           {/* Step 6 — postprocessing. Bloom 광원 발광 + SSAO 공간 AO + SSR 스크린 반사 */}
-          {(mood.bloomEnabled || mood.ssaoEnabled) && (
-            <EffectComposer enableNormalPass={mood.ssaoEnabled}>
-              <>
-                {mood.bloomEnabled && (
-                  <Bloom
-                    intensity={mood.bloomIntensity}
-                    luminanceThreshold={mood.bloomThreshold}
-                    luminanceSmoothing={0.4}
-                    mipmapBlur
-                  />
-                )}
-                {mood.ssaoEnabled && (
-                  <SSAO
-                    intensity={mood.ssaoIntensity}
-                    radius={mood.ssaoRadius}
-                    samples={16}
-                    rings={4}
-                    luminanceInfluence={0.6}
-                    worldDistanceThreshold={1}
-                    worldDistanceFalloff={1}
-                    worldProximityThreshold={1}
-                    worldProximityFalloff={1}
-                  />
-                )}
-                {/* SSR — @react-three/postprocessing v3 미export. 백로그. */}
-              </>
+          {mood.bloomEnabled && (
+            <EffectComposer>
+              <Bloom
+                intensity={mood.bloomIntensity}
+                luminanceThreshold={mood.bloomThreshold}
+                luminanceSmoothing={0.4}
+                mipmapBlur
+              />
             </EffectComposer>
           )}
+          {/*
+           * SSAO — @react-three/postprocessing v3 의 알려진 NormalPass 문제로 즉시 사용 불가.
+           *   증상: 'Cannot read properties of undefined (reading length)' + Context Lost.
+           *   해결안: (a) n8ao 패키지 도입 (b) v3 후속 패치 대기
+           * SSR — v3 미export. 별도 패키지 필요.
+           * 둘 다 백로그.
+           */}
         </Canvas>
 
         {/* 우측 하단 dims HUD */}
