@@ -58,7 +58,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         </button>
       </div>
 
-      <Section title="0 · PBR 텍스쳐 (면별)">
+      <Section title="0 · 표면 질감 (PBR 텍스쳐 — 면별)">
         <div className="space-y-2">
           <TextureSelect
             face="벽"
@@ -78,7 +78,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         </div>
         <div className="mt-2">
           <Slider
-            title="텍스쳐 반복 (tiling)"
+            title="텍스쳐 반복 (tiling — 무늬 크기)"
             value={state.textureRepeat}
             min={1}
             max={10}
@@ -89,7 +89,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         </div>
       </Section>
 
-      <Section title="1 · 벽 색 (텍스쳐 없을 때 / multiply)">
+      <Section title="1 · 벽 색 (텍스쳐와 곱해짐)">
         <input
           type="color"
           value={state.wallColor}
@@ -99,7 +99,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
       </Section>
 
       <Slider
-        title="2 · roughness (매트 ↔ 광택)"
+        title="2 · 거칠기 (roughness — 매트↔광택)"
         value={state.roughness}
         min={0}
         max={1}
@@ -109,7 +109,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
       />
 
       <Slider
-        title="3 · metalness (비금속 ↔ 금속)"
+        title="3 · 금속성 (metalness — 비금속↔금속)"
         value={state.metalness}
         min={0}
         max={1}
@@ -118,7 +118,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         hint={`${state.metalness.toFixed(2)}`}
       />
 
-      <Section title="4 · 환경맵 (반사 IBL)">
+      <Section title="4 · 환경맵 (주변 반사용 — IBL)">
         <select
           value={
             state.env.source === 'preset'
@@ -136,14 +136,14 @@ export default function MoodControls({ state, setState, onBack }: Props) {
           }}
           className="w-full px-2 py-1.5 text-sm bg-white text-slate-900 border border-slate-300 rounded"
         >
-          <optgroup label="실파일 HDRI (PolyHaven CC0)">
+          <optgroup label="실파일 HDRI (고해상도 환경맵)">
             {ENV_HDRS.map((k) => (
               <option key={`hdr:${k}`} value={`hdr:${k}`}>
                 {k}
               </option>
             ))}
           </optgroup>
-          <optgroup label="내장 preset (drei LDR)">
+          <optgroup label="내장 환경맵 (drei preset — 간편)">
             {ENV_PRESETS.map((p) => (
               <option key={`preset:${p}`} value={`preset:${p}`}>
                 {p}
@@ -154,7 +154,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
       </Section>
 
       <Slider
-        title="5 · ambient 조명 강도"
+        title="5 · 주변광 강도 (ambient — 전체 균일하게 밝아짐)"
         value={state.ambientIntensity}
         min={0}
         max={5}
@@ -163,7 +163,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         hint={`${state.ambientIntensity.toFixed(2)}`}
       />
 
-      <Section title="6 · spotLight 위치 (mm, 공간 중심 기준)">
+      <Section title="6 · 스폿라이트 위치 (다운라이트 — mm, 공간 중심 0)">
         <div className="grid grid-cols-3 gap-2">
           <NumField
             label="X"
@@ -182,7 +182,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
           />
         </div>
         <Slider
-          title="spot 강도"
+          title="스폿라이트 강도 (intensity)"
           value={state.spotIntensity}
           min={0}
           max={20}
@@ -192,7 +192,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
-      <Section title="7 · spotLight 색">
+      <Section title="7 · 스폿라이트 색 (전구색)">
         <input
           type="color"
           value={state.spotColor}
@@ -201,10 +201,10 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
-      <Section title="3+ · meshPhysical 확장 (Step 3)">
+      <Section title="3+ · 추가 재질 (meshPhysical — 광택/투과/굴절)">
         <div className="space-y-3 border-l-2 border-slate-200 pl-3">
           <Slider
-            title="clearcoat (코팅 광택, 도자기)"
+            title="코팅막 (clearcoat — 도자기/락카 광택)"
             value={state.clearcoat}
             min={0}
             max={1}
@@ -213,7 +213,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             hint={`${state.clearcoat.toFixed(2)}`}
           />
           <Slider
-            title="clearcoat roughness"
+            title="코팅막 거칠기 (clearcoat roughness)"
             value={state.clearcoatRoughness}
             min={0}
             max={1}
@@ -222,7 +222,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             hint={`${state.clearcoatRoughness.toFixed(2)}`}
           />
           <Slider
-            title="sheen (패브릭 광택)"
+            title="표면 윤기 (sheen — 벨벳/패브릭)"
             value={state.sheen}
             min={0}
             max={1}
@@ -231,7 +231,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             hint={`${state.sheen.toFixed(2)}`}
           />
           <div>
-            <div className="text-xs font-medium text-slate-700 mb-1.5">sheen color</div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">윤기 색 (sheen color)</div>
             <input
               type="color"
               value={state.sheenColor}
@@ -240,7 +240,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             />
           </div>
           <Slider
-            title="sheen roughness"
+            title="윤기 거칠기 (sheen roughness)"
             value={state.sheenRoughness}
             min={0}
             max={1}
@@ -249,7 +249,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             hint={`${state.sheenRoughness.toFixed(2)}`}
           />
           <Slider
-            title="transmission (투명, 유리)"
+            title="투과 (transmission — 불투명↔유리)"
             value={state.transmission}
             min={0}
             max={1}
@@ -258,7 +258,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             hint={`${state.transmission.toFixed(2)}`}
           />
           <Slider
-            title="thickness (transmission 두께)"
+            title="두께 (thickness — 투과 시 빛 굴절량)"
             value={state.thickness}
             min={0}
             max={5}
@@ -267,7 +267,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             hint={`${state.thickness.toFixed(2)}`}
           />
           <Slider
-            title="ior (굴절률, 유리 1.5)"
+            title="굴절률 (ior — 공기 1.0 / 유리 1.5 / 다이아 2.4)"
             value={state.ior}
             min={1.0}
             max={2.5}
@@ -278,21 +278,21 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         </div>
       </Section>
 
-      <Section title="8 · tone mapping + exposure">
+      <Section title="8 · 톤매핑 + 노출 (tone mapping + exposure)">
         <div className="flex gap-2 mb-2">
           <ToneOption
-            label="Linear"
+            label="Linear (선형 — 평이)"
             active={state.toneMapping === 'linear'}
             onClick={() => patch({ toneMapping: 'linear' })}
           />
           <ToneOption
-            label="ACES"
+            label="ACES (영화톤 — 권장)"
             active={state.toneMapping === 'aces'}
             onClick={() => patch({ toneMapping: 'aces' })}
           />
         </div>
         <Slider
-          title="exposure"
+          title="노출 (exposure — 전체 밝기 보정)"
           value={state.exposure}
           min={0.1}
           max={3.0}
