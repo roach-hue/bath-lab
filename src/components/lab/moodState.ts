@@ -71,6 +71,13 @@ export type MoodState = {
   iridescenceIOR: number; // 1.0 ~ 2.5
   // Phase 2-E — envMap intensity (IBL 영향 강약)
   envIntensity: number;
+  // Phase 3-B — MeshReflectorMaterial (바닥 진짜 반사)
+  reflectorEnabled: boolean;
+  reflectorMixStrength: number; // 0~5, 반사 강도
+  reflectorBlur: number; // 0~500, 반사 블러
+  reflectorMixBlur: number; // 0~5, 블러 혼합
+  reflectorRoughness: number; // 반사면 자체 거칠기 (0=완전 거울)
+  reflectorResolution: 256 | 512 | 1024 | 2048;
   // 환경맵 (preset OR hdr 파일)
   env: EnvSelection;
   // 조명
@@ -113,6 +120,13 @@ export const DEFAULT_MOOD: MoodState = {
   iridescenceIOR: 1.3,
   // Phase 2-E IBL 강도
   envIntensity: 1.0,
+  // Phase 3-B 기본은 반사 켜기 — 진규님 효과 즉시 확인용
+  reflectorEnabled: true,
+  reflectorMixStrength: 0.6,
+  reflectorBlur: 100,
+  reflectorMixBlur: 1.0,
+  reflectorRoughness: 0.5,
+  reflectorResolution: 1024,
   env: { source: 'hdr', key: 'studio_small_03_2k' },
   ambientIntensity: 0.6,
   spotX_mm: 0,

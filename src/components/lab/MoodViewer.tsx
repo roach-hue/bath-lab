@@ -106,6 +106,14 @@ export default function MoodViewer({ dims, onBack }: Props) {
             floorTexture={mood.floorTexture}
             ceilingTexture={mood.ceilingTexture}
             textureRepeat={mood.textureRepeat}
+            reflector={{
+              enabled: mood.reflectorEnabled,
+              mixStrength: mood.reflectorMixStrength,
+              blur: mood.reflectorBlur,
+              mixBlur: mood.reflectorMixBlur,
+              roughness: mood.reflectorRoughness,
+              resolution: mood.reflectorResolution,
+            }}
           />
 
           <OrbitControls

@@ -19,7 +19,7 @@
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { useThree } from '@react-three/fiber';
-import { useTexture } from '@react-three/drei';
+import { useTexture, MeshReflectorMaterial } from '@react-three/drei';
 import {
   TEXTURE_SETS,
   TextureSet,
@@ -54,6 +54,16 @@ export type PhysicalExtras = {
   envIntensity: number;
 };
 
+/** Phase 3-B — MeshReflectorMaterial 컨트롤 prop. */
+export type ReflectorSettings = {
+  enabled: boolean;
+  mixStrength: number;
+  blur: number;
+  mixBlur: number;
+  roughness: number;
+  resolution: 256 | 512 | 1024 | 2048;
+};
+
 type Props = {
   w_mm: number;
   d_mm: number;
@@ -68,6 +78,8 @@ type Props = {
   floorTexture: TextureSetKey;
   ceilingTexture: TextureSetKey;
   textureRepeat: number;
+  // Phase 3-B — 바닥 반사 셋팅
+  reflector: ReflectorSettings;
 };
 
 export default function BathRoom({
@@ -82,26 +94,250 @@ export default function BathRoom({
   floorTexture,
   ceilingTexture,
   textureRepeat,
+  reflector,
 }: Props) {
   const w = w_mm * MM;
   const d = d_mm * MM;
   const h = h_mm * MM;
 
+  // Phase 3-B: BoxGeometry 의 바닥(material-3) 자리는 invisible — 별도 ReflectorFloor 로 대체.
   const geom = useMemo(() => new THREE.BoxGeometry(w, h, d), [w, h, d]);
 
   return (
-    <mesh geometry={geom} position={[0, h / 2, 0]} receiveShadow castShadow>
-      {/* 벽 4면 (0, 1, 4, 5) — wallMat */}
-      <FaceMaterial attach="material-0" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
-      <FaceMaterial attach="material-1" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
-      {/* 천장 (2) — ceilingMat */}
-      <FaceMaterial attach="material-2" textureKey={ceilingTexture} base={ceilingMat} physical={physical} repeat={textureRepeat} />
-      {/* 바닥 (3) — floorMat */}
-      <FaceMaterial attach="material-3" textureKey={floorTexture} base={floorMat} physical={physical} repeat={textureRepeat} />
-      {/* 벽 4면 (계속) */}
-      <FaceMaterial attach="material-4" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
-      <FaceMaterial attach="material-5" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
+    <group>
+      <mesh geometry={geom} position={[0, h / 2, 0]} receiveShadow>
+        <FaceMaterial attach="material-0" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
+        <FaceMaterial attach="material-1" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
+        <FaceMaterial attach="material-2" textureKey={ceilingTexture} base={ceilingMat} physical={physical} repeat={textureRepeat} />
+        {/* 바닥 자리 = 항상 invisible. ReflectorFloor 또는 FloorPlane 이 대체 */}
+        <meshBasicMaterial attach="material-3" visible={false} />
+        <FaceMaterial attach="material-4" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
+        <FaceMaterial attach="material-5" textureKey={wallTexture} base={wallMat} physical={physical} repeat={textureRepeat} />
+      </mesh>
+      <FloorElement
+        w={w}
+        d={d}
+        textureKey={floorTexture}
+        base={floorMat}
+        physical={physical}
+        repeat={textureRepeat}
+        reflector={reflector}
+      />
+    </group>
+  );
+}
+
+/** Phase 3-B — 바닥 단독 plane. reflector.enabled 시 MeshReflectorMaterial, 아니면 일반 PBR. */
+function FloorElement({
+  w,
+  d,
+  textureKey,
+  base,
+  physical,
+  repeat,
+  reflector,
+}: {
+  w: number;
+  d: number;
+  textureKey: TextureSetKey;
+  base: FaceMat;
+  physical: PhysicalExtras;
+  repeat: number;
+  reflector: ReflectorSettings;
+}) {
+  if (reflector.enabled) {
+    return (
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+        <planeGeometry args={[w, d]} />
+        <ReflectorFloorMaterial textureKey={textureKey} base={base} repeat={repeat} reflector={reflector} />
+      </mesh>
+    );
+  }
+  // 반사 비활성 — 일반 FaceMaterial 와 동일 (단 별도 plane mesh)
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+      <planeGeometry args={[w, d]} />
+      <SoloFaceMaterial textureKey={textureKey} base={base} physical={physical} repeat={repeat} />
     </mesh>
+  );
+}
+
+/** 단일 mesh 에 붙는 FaceMaterial (attach prop 없는 version). */
+function SoloFaceMaterial({
+  textureKey,
+  base,
+  physical,
+  repeat,
+}: {
+  textureKey: TextureSetKey;
+  base: FaceMat;
+  physical: PhysicalExtras;
+  repeat: number;
+}) {
+  if (textureKey === 'none') {
+    return (
+      <meshPhysicalMaterial
+        color={base.color}
+        roughness={base.roughness}
+        metalness={base.metalness}
+        clearcoat={physical.clearcoat}
+        clearcoatRoughness={physical.clearcoatRoughness}
+        sheen={physical.sheen}
+        sheenColor={physical.sheenColor}
+        sheenRoughness={physical.sheenRoughness}
+        transmission={physical.transmission}
+        thickness={physical.thickness}
+        ior={physical.ior}
+        anisotropy={physical.anisotropy}
+        anisotropyRotation={physical.anisotropyRotation}
+        iridescence={physical.iridescence}
+        iridescenceIOR={physical.iridescenceIOR}
+        envMapIntensity={physical.envIntensity}
+      />
+    );
+  }
+  return <SoloTexturedFaceMaterial set={TEXTURE_SETS[textureKey]} base={base} physical={physical} repeat={repeat} />;
+}
+
+function SoloTexturedFaceMaterial({
+  set,
+  base,
+  physical,
+  repeat,
+}: {
+  set: TextureSet;
+  base: FaceMat;
+  physical: PhysicalExtras;
+  repeat: number;
+}) {
+  const textures = useTexture({
+    map: set.diff,
+    normalMap: set.normal,
+    roughnessMap: set.rough,
+    aoMap: set.ao,
+  });
+  const { gl } = useThree();
+  useEffect(() => {
+    const maxAniso = gl.capabilities.getMaxAnisotropy();
+    Object.values(textures).forEach((t) => {
+      if (!t) return;
+      t.wrapS = THREE.RepeatWrapping;
+      t.wrapT = THREE.RepeatWrapping;
+      t.repeat.set(repeat, repeat);
+      t.anisotropy = maxAniso;
+      t.needsUpdate = true;
+    });
+    if (textures.map) textures.map.colorSpace = THREE.SRGBColorSpace;
+    if (textures.normalMap) textures.normalMap.colorSpace = THREE.NoColorSpace;
+    if (textures.roughnessMap) textures.roughnessMap.colorSpace = THREE.NoColorSpace;
+    if (textures.aoMap) textures.aoMap.colorSpace = THREE.NoColorSpace;
+  }, [textures, repeat, gl]);
+
+  return (
+    <meshPhysicalMaterial
+      map={textures.map}
+      normalMap={textures.normalMap}
+      roughnessMap={textures.roughnessMap}
+      aoMap={textures.aoMap}
+      color={base.color}
+      roughness={base.roughness}
+      metalness={base.metalness}
+      clearcoat={physical.clearcoat}
+      clearcoatRoughness={physical.clearcoatRoughness}
+      sheen={physical.sheen}
+      sheenColor={physical.sheenColor}
+      sheenRoughness={physical.sheenRoughness}
+      transmission={physical.transmission}
+      thickness={physical.thickness}
+      ior={physical.ior}
+      anisotropy={physical.anisotropy}
+      anisotropyRotation={physical.anisotropyRotation}
+      iridescence={physical.iridescence}
+      iridescenceIOR={physical.iridescenceIOR}
+      envMapIntensity={physical.envIntensity}
+    />
+  );
+}
+
+/** MeshReflectorMaterial 분기 wrapper. */
+function ReflectorFloorMaterial({
+  textureKey,
+  base,
+  repeat,
+  reflector,
+}: {
+  textureKey: TextureSetKey;
+  base: FaceMat;
+  repeat: number;
+  reflector: ReflectorSettings;
+}) {
+  if (textureKey === 'none') {
+    return <SolidReflector base={base} reflector={reflector} />;
+  }
+  return <TexturedReflector set={TEXTURE_SETS[textureKey]} base={base} repeat={repeat} reflector={reflector} />;
+}
+
+function SolidReflector({ base, reflector }: { base: FaceMat; reflector: ReflectorSettings }) {
+  return (
+    <MeshReflectorMaterial
+      mirror={1}
+      mixStrength={reflector.mixStrength}
+      mixBlur={reflector.mixBlur}
+      blur={[reflector.blur, reflector.blur]}
+      resolution={reflector.resolution}
+      color={base.color}
+      roughness={reflector.roughness}
+      metalness={base.metalness}
+    />
+  );
+}
+
+function TexturedReflector({
+  set,
+  base,
+  repeat,
+  reflector,
+}: {
+  set: TextureSet;
+  base: FaceMat;
+  repeat: number;
+  reflector: ReflectorSettings;
+}) {
+  const { gl } = useThree();
+  const textures = useTexture({
+    map: set.diff,
+    normalMap: set.normal,
+    roughnessMap: set.rough,
+  });
+  useEffect(() => {
+    const maxAniso = gl.capabilities.getMaxAnisotropy();
+    Object.values(textures).forEach((t) => {
+      if (!t) return;
+      t.wrapS = THREE.RepeatWrapping;
+      t.wrapT = THREE.RepeatWrapping;
+      t.repeat.set(repeat, repeat);
+      t.anisotropy = maxAniso;
+      t.needsUpdate = true;
+    });
+    if (textures.map) textures.map.colorSpace = THREE.SRGBColorSpace;
+    if (textures.normalMap) textures.normalMap.colorSpace = THREE.NoColorSpace;
+    if (textures.roughnessMap) textures.roughnessMap.colorSpace = THREE.NoColorSpace;
+  }, [textures, repeat, gl]);
+
+  return (
+    <MeshReflectorMaterial
+      mirror={1}
+      mixStrength={reflector.mixStrength}
+      mixBlur={reflector.mixBlur}
+      blur={[reflector.blur, reflector.blur]}
+      resolution={reflector.resolution}
+      color={base.color}
+      roughness={reflector.roughness}
+      metalness={base.metalness}
+      map={textures.map}
+      normalMap={textures.normalMap}
+      roughnessMap={textures.roughnessMap}
+    />
   );
 }
 

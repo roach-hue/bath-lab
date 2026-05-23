@@ -30,6 +30,9 @@ describe('moodState', () => {
       'anisotropy', 'anisotropyRotation', 'iridescence', 'iridescenceIOR',
       // Phase 2-E
       'envIntensity',
+      // Phase 3-B reflector
+      'reflectorEnabled', 'reflectorMixStrength', 'reflectorBlur',
+      'reflectorMixBlur', 'reflectorRoughness', 'reflectorResolution',
       'env',
       'ambientIntensity',
       'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',

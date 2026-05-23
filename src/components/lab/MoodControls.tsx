@@ -206,6 +206,68 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
+      <Section title="3++ · 바닥 반사 (MeshReflector — Phase 3)">
+        <div className="space-y-3 border-l-2 border-blue-200 pl-3">
+          <label className="flex items-center gap-2 text-xs text-slate-700">
+            <input
+              type="checkbox"
+              checked={state.reflectorEnabled}
+              onChange={(e) => patch({ reflectorEnabled: e.target.checked })}
+            />
+            반사 ON/OFF
+          </label>
+          <Slider
+            title="반사 강도 (mixStrength)"
+            value={state.reflectorMixStrength}
+            min={0}
+            max={5}
+            step={0.05}
+            onChange={(v) => patch({ reflectorMixStrength: v })}
+            hint={`${state.reflectorMixStrength.toFixed(2)}`}
+          />
+          <Slider
+            title="반사 블러 (blur)"
+            value={state.reflectorBlur}
+            min={0}
+            max={500}
+            step={5}
+            onChange={(v) => patch({ reflectorBlur: v })}
+            hint={`${state.reflectorBlur.toFixed(0)}`}
+          />
+          <Slider
+            title="블러 혼합 (mixBlur)"
+            value={state.reflectorMixBlur}
+            min={0}
+            max={5}
+            step={0.05}
+            onChange={(v) => patch({ reflectorMixBlur: v })}
+            hint={`${state.reflectorMixBlur.toFixed(2)}`}
+          />
+          <Slider
+            title="반사면 거칠기 (0=완전 거울)"
+            value={state.reflectorRoughness}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => patch({ reflectorRoughness: v })}
+            hint={`${state.reflectorRoughness.toFixed(2)}`}
+          />
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">반사 해상도 (resolution)</div>
+            <select
+              value={state.reflectorResolution}
+              onChange={(e) => patch({ reflectorResolution: Number(e.target.value) as 256 | 512 | 1024 | 2048 })}
+              className="w-full px-2 py-1.5 text-sm bg-white text-slate-900 border border-slate-300 rounded"
+            >
+              <option value={256}>256 (가벼움)</option>
+              <option value={512}>512</option>
+              <option value={1024}>1024 (권장)</option>
+              <option value={2048}>2048 (선명, 무거움)</option>
+            </select>
+          </div>
+        </div>
+      </Section>
+
       <Section title="3+ · 추가 재질 (meshPhysical — 광택/투과/굴절)">
         <div className="space-y-3 border-l-2 border-slate-200 pl-3">
           <Slider
