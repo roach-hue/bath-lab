@@ -170,7 +170,7 @@ export default function MoodViewer({ dims, onBack }: Props) {
 
           {/* Step 6 — postprocessing. Bloom 광원 발광 + SSAO 공간 AO + SSR 스크린 반사 */}
           {(mood.bloomEnabled || mood.ssaoEnabled) && (
-            <EffectComposer>
+            <EffectComposer enableNormalPass={mood.ssaoEnabled}>
               <>
                 {mood.bloomEnabled && (
                   <Bloom
@@ -187,9 +187,13 @@ export default function MoodViewer({ dims, onBack }: Props) {
                     samples={16}
                     rings={4}
                     luminanceInfluence={0.6}
+                    worldDistanceThreshold={1}
+                    worldDistanceFalloff={1}
+                    worldProximityThreshold={1}
+                    worldProximityFalloff={1}
                   />
                 )}
-                {/* SSR — @react-three/postprocessing v3 미export. 별도 패키지 'screen-space-reflections' 필요 (백로그). */}
+                {/* SSR — @react-three/postprocessing v3 미export. 백로그. */}
               </>
             </EffectComposer>
           )}
