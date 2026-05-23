@@ -81,6 +81,14 @@ export type MoodState = {
   // Phase 4-H — Displacement (진짜 vertex 변형, 울룩불룩)
   displacementScale: number; // 보통 0 ~ 0.05 (m 단위). 0 = 효과 X.
   geometrySegments: 16 | 32 | 64 | 128; // vertex 분할 수. 높을수록 부드러운 디테일
+  // Step 5 — SoftShadow (셰이더 inject) + ContactShadow (접지 그림자)
+  softShadowEnabled: boolean;
+  softShadowSamples: number; // 8~17
+  softShadowFocus: number; // 0~1
+  softShadowSize: number; // 5~50
+  contactShadowEnabled: boolean;
+  contactShadowOpacity: number; // 0~1
+  contactShadowBlur: number; // 0~10
   // Step 4 — rectAreaLight (면광원, 다운라이트/거울조명 자연스러움)
   rectAreaEnabled: boolean;
   rectAreaX_mm: number;
@@ -142,6 +150,14 @@ export const DEFAULT_MOOD: MoodState = {
   // Phase 4-H — 기본은 약하게 켜기. 효과 즉시 보임 (벽돌 줄눈 깊이감).
   displacementScale: 0.015,
   geometrySegments: 64,
+  // Step 5 — SoftShadow + ContactShadow 기본 ON (즉시 효과 확인)
+  softShadowEnabled: true,
+  softShadowSamples: 12,
+  softShadowFocus: 0.4,
+  softShadowSize: 25,
+  contactShadowEnabled: true,
+  contactShadowOpacity: 0.35,
+  contactShadowBlur: 2.5,
   // Step 4 — 천장 중앙 다운라이트 (600×600mm 면광원)
   rectAreaEnabled: true,
   rectAreaX_mm: 0,

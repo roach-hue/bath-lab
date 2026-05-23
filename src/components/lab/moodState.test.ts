@@ -38,6 +38,9 @@ describe('moodState', () => {
       // Step 4 rectArea
       'rectAreaEnabled', 'rectAreaX_mm', 'rectAreaY_mm', 'rectAreaZ_mm',
       'rectAreaWidth_mm', 'rectAreaHeight_mm', 'rectAreaColor', 'rectAreaIntensity',
+      // Step 5 shadows
+      'softShadowEnabled', 'softShadowSamples', 'softShadowFocus', 'softShadowSize',
+      'contactShadowEnabled', 'contactShadowOpacity', 'contactShadowBlur',
       'env',
       'ambientIntensity',
       'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',

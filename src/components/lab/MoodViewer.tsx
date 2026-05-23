@@ -7,7 +7,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Environment } from '@react-three/drei';
+import { OrbitControls, Environment, SoftShadows, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 
@@ -48,6 +48,15 @@ export default function MoodViewer({ dims, onBack }: Props) {
           gl={{ antialias: true }}
         >
           <ToneMappingSetter mode={mood.toneMapping} exposure={mood.exposure} />
+
+          {/* Step 5 — SoftShadows: 셰이더 inject, 모든 그림자 부드럽게 */}
+          {mood.softShadowEnabled && (
+            <SoftShadows
+              samples={mood.softShadowSamples}
+              focus={mood.softShadowFocus}
+              size={mood.softShadowSize}
+            />
+          )}
 
           {/* 환경맵 — IBL 반사. preset (LDR 내장) 또는 .hdr 실파일 분기. */}
           {mood.env.source === 'preset' ? (
@@ -137,6 +146,18 @@ export default function MoodViewer({ dims, onBack }: Props) {
               segments: mood.geometrySegments,
             }}
           />
+
+          {/* Step 5 — ContactShadows: 바닥 위 접지 그림자 (가구 추가 시 자연 접지감) */}
+          {mood.contactShadowEnabled && (
+            <ContactShadows
+              position={[0, 0.001, 0]}
+              scale={Math.max(w, d) * 1.2}
+              opacity={mood.contactShadowOpacity}
+              blur={mood.contactShadowBlur}
+              far={1}
+              resolution={512}
+            />
+          )}
 
           <OrbitControls
             target={camTarget}

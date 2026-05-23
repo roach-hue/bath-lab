@@ -206,6 +206,32 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
+      <Section title="10 · 부드러운 그림자 (Step 5 — SoftShadow + ContactShadow)">
+        <div className="space-y-3 border-l-2 border-purple-200 pl-3">
+          <label className="flex items-center gap-2 text-xs text-slate-700">
+            <input
+              type="checkbox"
+              checked={state.softShadowEnabled}
+              onChange={(e) => patch({ softShadowEnabled: e.target.checked })}
+            />
+            SoftShadow ON/OFF (셰이더 inject)
+          </label>
+          <Slider title="soft samples (품질)" value={state.softShadowSamples} min={4} max={20} step={1} onChange={(v) => patch({ softShadowSamples: v })} hint={`${state.softShadowSamples}`} />
+          <Slider title="soft focus" value={state.softShadowFocus} min={0} max={1} step={0.01} onChange={(v) => patch({ softShadowFocus: v })} hint={`${state.softShadowFocus.toFixed(2)}`} />
+          <Slider title="soft size" value={state.softShadowSize} min={1} max={50} step={1} onChange={(v) => patch({ softShadowSize: v })} hint={`${state.softShadowSize}`} />
+          <label className="flex items-center gap-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
+            <input
+              type="checkbox"
+              checked={state.contactShadowEnabled}
+              onChange={(e) => patch({ contactShadowEnabled: e.target.checked })}
+            />
+            ContactShadow ON/OFF (접지)
+          </label>
+          <Slider title="contact opacity" value={state.contactShadowOpacity} min={0} max={1} step={0.01} onChange={(v) => patch({ contactShadowOpacity: v })} hint={`${state.contactShadowOpacity.toFixed(2)}`} />
+          <Slider title="contact blur" value={state.contactShadowBlur} min={0} max={10} step={0.1} onChange={(v) => patch({ contactShadowBlur: v })} hint={`${state.contactShadowBlur.toFixed(1)}`} />
+        </div>
+      </Section>
+
       <Section title="9 · 면광원 다운라이트 (rectAreaLight — Step 4)">
         <div className="space-y-3 border-l-2 border-yellow-200 pl-3">
           <label className="flex items-center gap-2 text-xs text-slate-700">
