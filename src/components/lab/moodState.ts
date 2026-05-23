@@ -119,6 +119,10 @@ export type MoodState = {
   // 톤
   toneMapping: ToneMappingMode;
   exposure: number;
+  // Step 7 — view mode (live / snapshot). snapshot = three-gpu-pathtracer
+  viewMode: 'live' | 'snapshot';
+  pathTracerMaxSamples: number; // 32~512, 누적 sample 수 (높을수록 노이즈 ↓)
+  pathTracerBounces: number; // 2~10
 };
 
 export const DEFAULT_MOOD: MoodState = {
@@ -194,4 +198,8 @@ export const DEFAULT_MOOD: MoodState = {
   spotIntensity: 8.0,
   toneMapping: 'aces',
   exposure: 1.0,
+  // Step 7 — 기본 live 모드. snapshot 으로 진규님 토글
+  viewMode: 'live',
+  pathTracerMaxSamples: 64,
+  pathTracerBounces: 4,
 };

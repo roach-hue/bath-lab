@@ -16,18 +16,20 @@ import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLigh
 RectAreaLightUniformsLib.init();
 import BathRoom from './BathRoom';
 import MoodControls from './MoodControls';
-import { DEFAULT_MOOD, MoodState, HDR_URL } from './moodState';
+import { MoodState, HDR_URL } from './moodState';
 import { BathDimensions } from './DimensionForm';
 
 const MM = 0.001;
 
 type Props = {
   dims: BathDimensions;
+  mood: MoodState;
+  setMood: (m: MoodState) => void;
   onBack: () => void;
+  onSnapshot: () => void;
 };
 
-export default function MoodViewer({ dims, onBack }: Props) {
-  const [mood, setMood] = useState<MoodState>(DEFAULT_MOOD);
+export default function MoodViewer({ dims, mood, setMood, onBack, onSnapshot }: Props) {
 
   const w = dims.w_mm * MM;
   const d = dims.d_mm * MM;
@@ -39,8 +41,18 @@ export default function MoodViewer({ dims, onBack }: Props) {
 
   return (
     <div className="flex h-screen w-full bg-slate-900">
-      <aside className="w-80 shrink-0 border-r border-slate-200 bg-white">
-        <MoodControls state={mood} setState={setMood} onBack={onBack} />
+      <aside className="w-80 shrink-0 border-r border-slate-200 bg-white flex flex-col">
+        <div className="p-3 border-b border-slate-200 bg-amber-50">
+          <button
+            onClick={onSnapshot}
+            className="w-full py-2 rounded font-medium text-sm bg-amber-600 text-white hover:bg-amber-700"
+          >
+            ★ 스냅샷 모드 (Path Tracer — V-Ray 급)
+          </button>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <MoodControls state={mood} setState={setMood} onBack={onBack} />
+        </div>
       </aside>
       <main className="flex-1 relative">
         <Canvas
