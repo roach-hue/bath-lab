@@ -171,13 +171,7 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
           )}
 
           <ambientLight intensity={mood.ambientIntensity} />
-          <spotLight
-            position={[mood.spotX_mm * MM, mood.spotY_mm * MM, mood.spotZ_mm * MM]}
-            color={mood.spotColor}
-            intensity={mood.spotIntensity}
-            angle={Math.PI / 3}
-            penumbra={0.5}
-          />
+          {/* spotLight 는 LightFixtures 안으로 통합 (그리드 분산 지원) */}
           {mood.rectAreaEnabled && (
             <rectAreaLight
               position={[mood.rectAreaX_mm * MM, mood.rectAreaY_mm * MM, mood.rectAreaZ_mm * MM]}
@@ -188,16 +182,20 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
             />
           )}
 
-          {/* Step 7.8 — 조명 fixture (path tracer 가 emissive 자동 light source 인식) */}
+          {/* Step 7.8 + 7.9 — 조명 fixture + spotLight 통합 (그리드 분산 지원) */}
           <LightFixtures
             h_mm={dims.h_mm}
             downlight={{
               show: mood.showDownlightFixture,
-              x_mm: mood.spotX_mm,
-              z_mm: mood.spotZ_mm,
+              centerX_mm: mood.spotX_mm,
+              centerZ_mm: mood.spotZ_mm,
+              spotY_mm: mood.spotY_mm,
               diameter_mm: mood.downlightDiameter_mm,
               color: mood.spotColor,
               intensity: mood.spotIntensity,
+              gridSize: mood.downlightGrid,
+              w_mm: dims.w_mm,
+              d_mm: dims.d_mm,
             }}
             panel={{
               show: mood.showRectFixture && mood.rectAreaEnabled,

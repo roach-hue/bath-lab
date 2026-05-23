@@ -52,7 +52,7 @@ describe('moodState', () => {
       // Step 7 path tracer + camera preset + fixture
       'viewMode', 'pathTracerMaxSamples', 'pathTracerBounces', 'snapshotResolution',
       'entranceWall', 'cameraPreset',
-      'showDownlightFixture', 'downlightDiameter_mm', 'showRectFixture',
+      'showDownlightFixture', 'downlightDiameter_mm', 'downlightGrid', 'showRectFixture',
     ];
     for (const k of requiredKeys) {
       expect(DEFAULT_MOOD).toHaveProperty(k);

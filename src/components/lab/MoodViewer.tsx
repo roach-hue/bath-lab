@@ -86,17 +86,7 @@ export default function MoodViewer({ dims, mood, setMood, onBack, onSnapshot }: 
           {/* ambient */}
           <ambientLight intensity={mood.ambientIntensity} />
 
-          {/* spotLight — 위치는 mm 입력, 공간 중심 기준이므로 그대로 m 변환 */}
-          <spotLight
-            position={[mood.spotX_mm * MM, mood.spotY_mm * MM, mood.spotZ_mm * MM]}
-            color={mood.spotColor}
-            intensity={mood.spotIntensity}
-            angle={Math.PI / 3}
-            penumbra={0.5}
-            castShadow
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
-          />
+          {/* spotLight 는 LightFixtures 안으로 이동 (그리드 분산 지원) */}
 
           {/* Step 4 — rectAreaLight 면광원 (다운라이트). castShadow 미지원이라 spotLight 와 병용. */}
           {mood.rectAreaEnabled && (
@@ -165,16 +155,20 @@ export default function MoodViewer({ dims, mood, setMood, onBack, onSnapshot }: 
             }}
           />
 
-          {/* Step 7.8 — 조명 fixture 시각화 (천장 다운라이트 disc + 면광원 panel) */}
+          {/* Step 7.8 + 7.9 — 조명 fixture (그리드 다운라이트 + 면광원 panel) + spotLight 통합 */}
           <LightFixtures
             h_mm={dims.h_mm}
             downlight={{
               show: mood.showDownlightFixture,
-              x_mm: mood.spotX_mm,
-              z_mm: mood.spotZ_mm,
+              centerX_mm: mood.spotX_mm,
+              centerZ_mm: mood.spotZ_mm,
+              spotY_mm: mood.spotY_mm,
               diameter_mm: mood.downlightDiameter_mm,
               color: mood.spotColor,
               intensity: mood.spotIntensity,
+              gridSize: mood.downlightGrid,
+              w_mm: dims.w_mm,
+              d_mm: dims.d_mm,
             }}
             panel={{
               show: mood.showRectFixture && mood.rectAreaEnabled,

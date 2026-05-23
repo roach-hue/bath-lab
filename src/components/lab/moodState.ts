@@ -134,6 +134,8 @@ export type MoodState = {
   /** Step 7.8 — 조명 fixture 시각화 (mesh + emissive). 진짜 빛나는 발광체로 표시. */
   showDownlightFixture: boolean; // spotLight 위치 원형 disc
   downlightDiameter_mm: number;
+  /** Step 7.9 — N×N 그리드 다운라이트 (호텔식). 1=단일, 2=2×2, 3=3×3. */
+  downlightGrid: 1 | 2 | 3;
   showRectFixture: boolean; // rectAreaLight 위치 사각 panel
 };
 
@@ -219,5 +221,6 @@ export const DEFAULT_MOOD: MoodState = {
   cameraPreset: 'corner',
   showDownlightFixture: true, // 천장 다운라이트 (spotLight 위치)
   downlightDiameter_mm: 150, // 일반 다운라이트 표준
+  downlightGrid: 1, // 기본 단일. 진규님이 select 로 3×3 까지
   showRectFixture: true, // 천장 면광원 패널 (rectArea 위치)
 };

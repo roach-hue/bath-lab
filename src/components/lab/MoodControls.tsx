@@ -311,6 +311,23 @@ export default function MoodControls({ state, setState, onBack }: Props) {
             onChange={(v) => patch({ downlightDiameter_mm: v })}
             hint={`${state.downlightDiameter_mm}mm`}
           />
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">
+              다운라이트 그리드 (천장 균등 배치)
+            </div>
+            <select
+              value={state.downlightGrid}
+              onChange={(e) => patch({ downlightGrid: Number(e.target.value) as 1 | 2 | 3 })}
+              className="w-full px-2 py-1.5 text-sm bg-white text-slate-900 border border-slate-300 rounded"
+            >
+              <option value={1}>단일 (중앙 1개)</option>
+              <option value={2}>2×2 (4개)</option>
+              <option value={3}>3×3 (9개, 호텔식)</option>
+            </select>
+            <p className="text-[10px] text-slate-500 mt-1">
+              총 spotIntensity 가 각 light 에 자동 분산 (총 빛 양 유지). castShadow 는 중심 1개만.
+            </p>
+          </div>
           <label className="flex items-center gap-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
             <input
               type="checkbox"
