@@ -17,6 +17,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, OrbitControls } from '@react-three/drei';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { WebGLPathTracer } from 'three-gpu-pathtracer';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
@@ -188,6 +189,17 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
           />
 
           <OrbitControls target={camTarget} enableDamping dampingFactor={0.08} />
+
+          {/* Step 7.5 — path tracer 결과 위에 Bloom 후처리 (광원 발광감). */}
+          {mood.bloomEnabled && (
+            <EffectComposer>
+              <Bloom
+                intensity={mood.bloomIntensity}
+                luminanceThreshold={mood.bloomThreshold}
+                luminanceSmoothing={0.4}
+              />
+            </EffectComposer>
+          )}
         </Canvas>
       </main>
     </div>
