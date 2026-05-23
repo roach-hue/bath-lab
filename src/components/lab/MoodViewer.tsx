@@ -8,6 +8,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, SoftShadows, ContactShadows } from '@react-three/drei';
+import { EffectComposer, Bloom, SSAO } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 
@@ -166,6 +167,32 @@ export default function MoodViewer({ dims, onBack }: Props) {
             minDistance={0.1}
             maxDistance={Math.max(w, d, h) * 3}
           />
+
+          {/* Step 6 — postprocessing. Bloom 광원 발광 + SSAO 공간 AO + SSR 스크린 반사 */}
+          {(mood.bloomEnabled || mood.ssaoEnabled) && (
+            <EffectComposer>
+              <>
+                {mood.bloomEnabled && (
+                  <Bloom
+                    intensity={mood.bloomIntensity}
+                    luminanceThreshold={mood.bloomThreshold}
+                    luminanceSmoothing={0.4}
+                    mipmapBlur
+                  />
+                )}
+                {mood.ssaoEnabled && (
+                  <SSAO
+                    intensity={mood.ssaoIntensity}
+                    radius={mood.ssaoRadius}
+                    samples={16}
+                    rings={4}
+                    luminanceInfluence={0.6}
+                  />
+                )}
+                {/* SSR — @react-three/postprocessing v3 미export. 별도 패키지 'screen-space-reflections' 필요 (백로그). */}
+              </>
+            </EffectComposer>
+          )}
         </Canvas>
 
         {/* 우측 하단 dims HUD */}

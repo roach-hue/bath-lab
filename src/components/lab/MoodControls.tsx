@@ -206,6 +206,36 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
+      <Section title="11 · 후처리 (Step 6 ★ — Bloom + SSAO + SSR · 빛 흐름 핵심)">
+        <div className="space-y-3 border-l-2 border-red-200 pl-3">
+          <label className="flex items-center gap-2 text-xs text-slate-700">
+            <input
+              type="checkbox"
+              checked={state.bloomEnabled}
+              onChange={(e) => patch({ bloomEnabled: e.target.checked })}
+            />
+            Bloom (광원 발광감)
+          </label>
+          <Slider title="bloom intensity" value={state.bloomIntensity} min={0} max={3} step={0.05} onChange={(v) => patch({ bloomIntensity: v })} hint={`${state.bloomIntensity.toFixed(2)}`} />
+          <Slider title="bloom threshold (어디서부터 발광)" value={state.bloomThreshold} min={0} max={1} step={0.01} onChange={(v) => patch({ bloomThreshold: v })} hint={`${state.bloomThreshold.toFixed(2)}`} />
+          <label className="flex items-center gap-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
+            <input
+              type="checkbox"
+              checked={state.ssaoEnabled}
+              onChange={(e) => patch({ ssaoEnabled: e.target.checked })}
+            />
+            SSAO (모서리 어두움 — 공간감 핵심)
+          </label>
+          <Slider title="ssao intensity" value={state.ssaoIntensity} min={0} max={5} step={0.05} onChange={(v) => patch({ ssaoIntensity: v })} hint={`${state.ssaoIntensity.toFixed(2)}`} />
+          <Slider title="ssao radius" value={state.ssaoRadius} min={0.05} max={1} step={0.01} onChange={(v) => patch({ ssaoRadius: v })} hint={`${state.ssaoRadius.toFixed(2)}`} />
+          <div className="pt-2 border-t border-slate-100 opacity-50">
+            <div className="text-xs text-slate-500">
+              SSR (스크린 공간 반사) — <span className="text-amber-700">미지원 (별도 패키지 필요, 백로그)</span>
+            </div>
+          </div>
+        </div>
+      </Section>
+
       <Section title="10 · 부드러운 그림자 (Step 5 — SoftShadow + ContactShadow)">
         <div className="space-y-3 border-l-2 border-purple-200 pl-3">
           <label className="flex items-center gap-2 text-xs text-slate-700">

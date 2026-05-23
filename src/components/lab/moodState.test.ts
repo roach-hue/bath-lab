@@ -41,6 +41,10 @@ describe('moodState', () => {
       // Step 5 shadows
       'softShadowEnabled', 'softShadowSamples', 'softShadowFocus', 'softShadowSize',
       'contactShadowEnabled', 'contactShadowOpacity', 'contactShadowBlur',
+      // Step 6 postprocessing
+      'bloomEnabled', 'bloomIntensity', 'bloomThreshold',
+      'ssaoEnabled', 'ssaoIntensity', 'ssaoRadius',
+      'ssrEnabled', 'ssrIntensity',
       'env',
       'ambientIntensity',
       'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',

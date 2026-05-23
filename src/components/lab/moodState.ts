@@ -81,6 +81,15 @@ export type MoodState = {
   // Phase 4-H — Displacement (진짜 vertex 변형, 울룩불룩)
   displacementScale: number; // 보통 0 ~ 0.05 (m 단위). 0 = 효과 X.
   geometrySegments: 16 | 32 | 64 | 128; // vertex 분할 수. 높을수록 부드러운 디테일
+  // Step 6 — postprocessing (Bloom + GTAO + SSR)
+  bloomEnabled: boolean;
+  bloomIntensity: number; // 0~3
+  bloomThreshold: number; // 0~1
+  ssaoEnabled: boolean;
+  ssaoIntensity: number; // 0~5
+  ssaoRadius: number; // 0~1
+  ssrEnabled: boolean;
+  ssrIntensity: number; // 0~1
   // Step 5 — SoftShadow (셰이더 inject) + ContactShadow (접지 그림자)
   softShadowEnabled: boolean;
   softShadowSamples: number; // 8~17
@@ -150,6 +159,15 @@ export const DEFAULT_MOOD: MoodState = {
   // Phase 4-H — 기본은 약하게 켜기. 효과 즉시 보임 (벽돌 줄눈 깊이감).
   displacementScale: 0.015,
   geometrySegments: 64,
+  // Step 6 — 진규님 "빛 흐름" 의 핵심. 기본 ON.
+  bloomEnabled: true,
+  bloomIntensity: 0.4,
+  bloomThreshold: 0.85,
+  ssaoEnabled: true,  // 모서리 어두움 = 공간감 핵심
+  ssaoIntensity: 1.0,
+  ssaoRadius: 0.25,
+  ssrEnabled: false,  // SSR 은 GPU 부담 — 기본 OFF, 진규님이 켜면 활성
+  ssrIntensity: 0.5,
   // Step 5 — SoftShadow + ContactShadow 기본 ON (즉시 효과 확인)
   softShadowEnabled: true,
   softShadowSamples: 12,
