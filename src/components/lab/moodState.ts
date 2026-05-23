@@ -78,6 +78,9 @@ export type MoodState = {
   reflectorMixBlur: number; // 0~5, 블러 혼합
   reflectorRoughness: number; // 반사면 자체 거칠기 (0=완전 거울)
   reflectorResolution: 256 | 512 | 1024 | 2048;
+  // Phase 4-H — Displacement (진짜 vertex 변형, 울룩불룩)
+  displacementScale: number; // 보통 0 ~ 0.05 (m 단위). 0 = 효과 X.
+  geometrySegments: 16 | 32 | 64 | 128; // vertex 분할 수. 높을수록 부드러운 디테일
   // 환경맵 (preset OR hdr 파일)
   env: EnvSelection;
   // 조명
@@ -127,6 +130,9 @@ export const DEFAULT_MOOD: MoodState = {
   reflectorMixBlur: 1.0,
   reflectorRoughness: 0.5,
   reflectorResolution: 1024,
+  // Phase 4-H — 기본은 약하게 켜기. 효과 즉시 보임 (벽돌 줄눈 깊이감).
+  displacementScale: 0.015,
+  geometrySegments: 64,
   env: { source: 'hdr', key: 'studio_small_03_2k' },
   ambientIntensity: 0.6,
   spotX_mm: 0,

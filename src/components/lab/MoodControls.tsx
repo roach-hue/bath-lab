@@ -206,6 +206,36 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
+      <Section title="3+++ · 진짜 울룩불룩 (Displacement — Phase 4 ★)">
+        <div className="space-y-3 border-l-2 border-orange-200 pl-3">
+          <Slider
+            title="displacement scale (vertex 변형 깊이)"
+            value={state.displacementScale}
+            min={0}
+            max={0.1}
+            step={0.001}
+            onChange={(v) => patch({ displacementScale: v })}
+            hint={`${state.displacementScale.toFixed(3)} m`}
+          />
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">geometry segments (분할 — 부드러움)</div>
+            <select
+              value={state.geometrySegments}
+              onChange={(e) => patch({ geometrySegments: Number(e.target.value) as 16 | 32 | 64 | 128 })}
+              className="w-full px-2 py-1.5 text-sm bg-white text-slate-900 border border-slate-300 rounded"
+            >
+              <option value={16}>16 (가벼움, 거칠음)</option>
+              <option value={32}>32</option>
+              <option value={64}>64 (권장)</option>
+              <option value={128}>128 (부드러움, 무거움)</option>
+            </select>
+          </div>
+          <p className="text-[10px] text-slate-500 leading-snug">
+            scale 0 = 효과 X (normalMap 만). 0.015 = 약함, 0.05 = 강함. 너무 크면 면 깨짐.
+          </p>
+        </div>
+      </Section>
+
       <Section title="3++ · 바닥 반사 (MeshReflector — Phase 3)">
         <div className="space-y-3 border-l-2 border-blue-200 pl-3">
           <label className="flex items-center gap-2 text-xs text-slate-700">

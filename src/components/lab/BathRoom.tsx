@@ -35,7 +35,7 @@ export type FaceMat = {
   metalness: number;
 };
 
-/** Step 3 + Phase 2 — meshPhysicalMaterial 확장 prop. 모든 face material 공통. */
+/** Step 3 + Phase 2 + Phase 4 — meshPhysicalMaterial 확장 prop. 모든 face material 공통. */
 export type PhysicalExtras = {
   clearcoat: number;
   clearcoatRoughness: number;
@@ -52,6 +52,8 @@ export type PhysicalExtras = {
   iridescenceIOR: number;
   // Phase 2-E
   envIntensity: number;
+  // Phase 4-H — displacement scale (모든 face 동일 scale)
+  displacementScale: number;
 };
 
 /** Phase 3-B — MeshReflectorMaterial 컨트롤 prop. */
@@ -64,22 +66,26 @@ export type ReflectorSettings = {
   resolution: 256 | 512 | 1024 | 2048;
 };
 
+/** Phase 4-H — Displacement (vertex 변형). */
+export type DisplacementSettings = {
+  scale: number; // 0 = 효과 X. 0.05 정도면 강함 (5cm)
+  segments: 16 | 32 | 64 | 128;
+};
+
 type Props = {
   w_mm: number;
   d_mm: number;
   h_mm: number;
-  // Phase 2-I — 면별 base (벽/바닥/천장 독립)
   wallMat: FaceMat;
   floorMat: FaceMat;
   ceilingMat: FaceMat;
   physical: PhysicalExtras;
-  // Step 2 — 면별 텍스쳐 키
   wallTexture: TextureSetKey;
   floorTexture: TextureSetKey;
   ceilingTexture: TextureSetKey;
   textureRepeat: number;
-  // Phase 3-B — 바닥 반사 셋팅
   reflector: ReflectorSettings;
+  displacement: DisplacementSettings;
 };
 
 export default function BathRoom({
@@ -95,13 +101,18 @@ export default function BathRoom({
   ceilingTexture,
   textureRepeat,
   reflector,
+  displacement,
 }: Props) {
   const w = w_mm * MM;
   const d = d_mm * MM;
   const h = h_mm * MM;
 
-  // Phase 3-B: BoxGeometry 의 바닥(material-3) 자리는 invisible — 별도 ReflectorFloor 로 대체.
-  const geom = useMemo(() => new THREE.BoxGeometry(w, h, d), [w, h, d]);
+  // Phase 4-H: BoxGeometry 의 segments 늘려 displacement 가 실제 vertex 변형.
+  const segs = displacement.segments;
+  const geom = useMemo(
+    () => new THREE.BoxGeometry(w, h, d, segs, segs, segs),
+    [w, h, d, segs],
+  );
 
   return (
     <group>
@@ -122,12 +133,14 @@ export default function BathRoom({
         physical={physical}
         repeat={textureRepeat}
         reflector={reflector}
+        segments={segs}
       />
     </group>
   );
 }
 
-/** Phase 3-B — 바닥 단독 plane. reflector.enabled 시 MeshReflectorMaterial, 아니면 일반 PBR. */
+/** Phase 3-B — 바닥 단독 plane. reflector.enabled 시 MeshReflectorMaterial, 아니면 일반 PBR.
+ *  Phase 4 — planeGeometry 의 segments 도 분할 (displacement 동작). */
 function FloorElement({
   w,
   d,
@@ -136,6 +149,7 @@ function FloorElement({
   physical,
   repeat,
   reflector,
+  segments,
 }: {
   w: number;
   d: number;
@@ -144,19 +158,19 @@ function FloorElement({
   physical: PhysicalExtras;
   repeat: number;
   reflector: ReflectorSettings;
+  segments: number;
 }) {
   if (reflector.enabled) {
     return (
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[w, d]} />
+        <planeGeometry args={[w, d, segments, segments]} />
         <ReflectorFloorMaterial textureKey={textureKey} base={base} repeat={repeat} reflector={reflector} />
       </mesh>
     );
   }
-  // 반사 비활성 — 일반 FaceMaterial 와 동일 (단 별도 plane mesh)
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-      <planeGeometry args={[w, d]} />
+      <planeGeometry args={[w, d, segments, segments]} />
       <SoloFaceMaterial textureKey={textureKey} base={base} physical={physical} repeat={repeat} />
     </mesh>
   );
@@ -215,6 +229,7 @@ function SoloTexturedFaceMaterial({
     normalMap: set.normal,
     roughnessMap: set.rough,
     aoMap: set.ao,
+    displacementMap: set.disp,
   });
   const { gl } = useThree();
   useEffect(() => {
@@ -231,6 +246,7 @@ function SoloTexturedFaceMaterial({
     if (textures.normalMap) textures.normalMap.colorSpace = THREE.NoColorSpace;
     if (textures.roughnessMap) textures.roughnessMap.colorSpace = THREE.NoColorSpace;
     if (textures.aoMap) textures.aoMap.colorSpace = THREE.NoColorSpace;
+    if (textures.displacementMap) textures.displacementMap.colorSpace = THREE.NoColorSpace;
   }, [textures, repeat, gl]);
 
   return (
@@ -239,6 +255,8 @@ function SoloTexturedFaceMaterial({
       normalMap={textures.normalMap}
       roughnessMap={textures.roughnessMap}
       aoMap={textures.aoMap}
+      displacementMap={textures.displacementMap}
+      displacementScale={physical.displacementScale}
       color={base.color}
       roughness={base.roughness}
       metalness={base.metalness}
@@ -403,13 +421,11 @@ function TexturedFaceMaterial({
     normalMap: set.normal,
     roughnessMap: set.rough,
     aoMap: set.ao,
+    displacementMap: set.disp,
   });
   const { gl } = useThree();
 
-  // tiling repeat 설정 + colorSpace 정합 (diff 만 sRGB, 나머지는 linear) + anisotropic filtering
   useEffect(() => {
-    // Phase 1 — anisotropic filtering 으로 비스듬한 시점에서 텍스쳐 흐릿함 제거.
-    // 대부분 GPU 16x 지원. capabilities.getMaxAnisotropy() 반환값 사용.
     const maxAniso = gl.capabilities.getMaxAnisotropy();
     Object.values(textures).forEach((t) => {
       if (!t) return;
@@ -423,6 +439,7 @@ function TexturedFaceMaterial({
     if (textures.normalMap) textures.normalMap.colorSpace = THREE.NoColorSpace;
     if (textures.roughnessMap) textures.roughnessMap.colorSpace = THREE.NoColorSpace;
     if (textures.aoMap) textures.aoMap.colorSpace = THREE.NoColorSpace;
+    if (textures.displacementMap) textures.displacementMap.colorSpace = THREE.NoColorSpace;
   }, [textures, repeat, gl]);
 
   return (
@@ -432,6 +449,8 @@ function TexturedFaceMaterial({
       normalMap={textures.normalMap}
       roughnessMap={textures.roughnessMap}
       aoMap={textures.aoMap}
+      displacementMap={textures.displacementMap}
+      displacementScale={physical.displacementScale}
       color={base.color}
       roughness={base.roughness}
       metalness={base.metalness}

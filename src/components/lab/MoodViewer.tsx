@@ -101,6 +101,7 @@ export default function MoodViewer({ dims, onBack }: Props) {
               iridescence: mood.iridescence,
               iridescenceIOR: mood.iridescenceIOR,
               envIntensity: mood.envIntensity,
+              displacementScale: mood.displacementScale,
             }}
             wallTexture={mood.wallTexture}
             floorTexture={mood.floorTexture}
@@ -113,6 +114,10 @@ export default function MoodViewer({ dims, onBack }: Props) {
               mixBlur: mood.reflectorMixBlur,
               roughness: mood.reflectorRoughness,
               resolution: mood.reflectorResolution,
+            }}
+            displacement={{
+              scale: mood.displacementScale,
+              segments: mood.geometrySegments,
             }}
           />
 

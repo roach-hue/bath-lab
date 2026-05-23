@@ -33,6 +33,8 @@ describe('moodState', () => {
       // Phase 3-B reflector
       'reflectorEnabled', 'reflectorMixStrength', 'reflectorBlur',
       'reflectorMixBlur', 'reflectorRoughness', 'reflectorResolution',
+      // Phase 4-H displacement
+      'displacementScale', 'geometrySegments',
       'env',
       'ambientIntensity',
       'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',

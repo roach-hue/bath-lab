@@ -15,17 +15,19 @@ import {
 } from './textureSets';
 
 describe('textureSets', () => {
-  it('모든 셋이 4 맵 (diff/normal/rough/ao) 정의 + URL 형식', () => {
+  it('모든 셋이 5 맵 (diff/normal/rough/ao/disp) 정의 + URL 형식', () => {
     for (const [slug, set] of Object.entries(TEXTURE_SETS)) {
       expect(set, `${slug}.diff`).toHaveProperty('diff');
       expect(set, `${slug}.normal`).toHaveProperty('normal');
       expect(set, `${slug}.rough`).toHaveProperty('rough');
       expect(set, `${slug}.ao`).toHaveProperty('ao');
+      expect(set, `${slug}.disp`).toHaveProperty('disp');
       // path 형식 — /textures/bath/{slug}/{slug}_{map}_*.jpg
       expect(set.diff).toMatch(new RegExp(`^/textures/bath/${slug}/${slug}_diff_\\dk\\.jpg$`));
       expect(set.normal).toMatch(new RegExp(`^/textures/bath/${slug}/${slug}_nor_gl_\\dk\\.jpg$`));
       expect(set.rough).toMatch(new RegExp(`^/textures/bath/${slug}/${slug}_rough_\\dk\\.jpg$`));
       expect(set.ao).toMatch(new RegExp(`^/textures/bath/${slug}/${slug}_ao_\\dk\\.jpg$`));
+      expect(set.disp).toMatch(new RegExp(`^/textures/bath/${slug}/${slug}_disp_\\dk\\.jpg$`));
     }
   });
 

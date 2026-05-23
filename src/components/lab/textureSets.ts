@@ -20,6 +20,8 @@ export type TextureSet = {
   normal: string;
   rough: string;
   ao: string;
+  /** Phase 4 — displacement (height) map. 진짜 vertex 변형. */
+  disp: string;
 };
 
 const base = (slug: string) => `/textures/bath/${slug}/${slug}`;
@@ -32,6 +34,7 @@ export const TEXTURE_SETS: Record<Exclude<TextureSetKey, 'none'>, TextureSet> = 
     normal: `${base('red_brick_03')}_nor_gl_2k.jpg`,
     rough: `${base('red_brick_03')}_rough_2k.jpg`,
     ao: `${base('red_brick_03')}_ao_2k.jpg`,
+    disp: `${base('red_brick_03')}_disp_2k.jpg`,
   },
   castle_brick_07: {
     label: '성벽 슬레이트 (castle brick)',
@@ -40,6 +43,7 @@ export const TEXTURE_SETS: Record<Exclude<TextureSetKey, 'none'>, TextureSet> = 
     normal: `${base('castle_brick_07')}_nor_gl_2k.jpg`,
     rough: `${base('castle_brick_07')}_rough_2k.jpg`,
     ao: `${base('castle_brick_07')}_ao_2k.jpg`,
+    disp: `${base('castle_brick_07')}_disp_2k.jpg`,
   },
   concrete_wall_004: {
     label: '콘크리트 (거친)',
@@ -48,6 +52,7 @@ export const TEXTURE_SETS: Record<Exclude<TextureSetKey, 'none'>, TextureSet> = 
     normal: `${base('concrete_wall_004')}_nor_gl_2k.jpg`,
     rough: `${base('concrete_wall_004')}_rough_2k.jpg`,
     ao: `${base('concrete_wall_004')}_ao_2k.jpg`,
+    disp: `${base('concrete_wall_004')}_disp_2k.jpg`,
   },
   wood_planks: {
     label: '나무 마루',
@@ -56,6 +61,7 @@ export const TEXTURE_SETS: Record<Exclude<TextureSetKey, 'none'>, TextureSet> = 
     normal: `${base('wood_planks')}_nor_gl_2k.jpg`,
     rough: `${base('wood_planks')}_rough_2k.jpg`,
     ao: `${base('wood_planks')}_ao_2k.jpg`,
+    disp: `${base('wood_planks')}_disp_2k.jpg`,
   },
   marble_01: {
     label: '대리석',
@@ -64,6 +70,7 @@ export const TEXTURE_SETS: Record<Exclude<TextureSetKey, 'none'>, TextureSet> = 
     normal: `${base('marble_01')}_nor_gl_2k.jpg`,
     rough: `${base('marble_01')}_rough_2k.jpg`,
     ao: `${base('marble_01')}_ao_2k.jpg`,
+    disp: `${base('marble_01')}_disp_2k.jpg`,
   },
 };
 
