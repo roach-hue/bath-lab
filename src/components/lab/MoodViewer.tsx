@@ -8,7 +8,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, SoftShadows, ContactShadows } from '@react-three/drei';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
+// Step 6 — EffectComposer/Bloom 통째로 제거.
+//   @react-three/postprocessing v3 + r3f 8 호환 문제 (NormalPass + mount 에러).
+//   증상: Cannot read properties of undefined (reading 'length') → WebGL Context Lost.
+//   후속: postprocessing v2 다운그레이드 또는 별도 effect 패키지 도입 (백로그).
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 
@@ -169,23 +172,7 @@ export default function MoodViewer({ dims, onBack }: Props) {
           />
 
           {/* Step 6 — postprocessing. Bloom 광원 발광 + SSAO 공간 AO + SSR 스크린 반사 */}
-          {mood.bloomEnabled && (
-            <EffectComposer>
-              <Bloom
-                intensity={mood.bloomIntensity}
-                luminanceThreshold={mood.bloomThreshold}
-                luminanceSmoothing={0.4}
-                mipmapBlur
-              />
-            </EffectComposer>
-          )}
-          {/*
-           * SSAO — @react-three/postprocessing v3 의 알려진 NormalPass 문제로 즉시 사용 불가.
-           *   증상: 'Cannot read properties of undefined (reading length)' + Context Lost.
-           *   해결안: (a) n8ao 패키지 도입 (b) v3 후속 패치 대기
-           * SSR — v3 미export. 별도 패키지 필요.
-           * 둘 다 백로그.
-           */}
+          {/* Step 6 postprocessing 전체 비활성 — 위 import 주석 참조. 백로그. */}
         </Canvas>
 
         {/* 우측 하단 dims HUD */}

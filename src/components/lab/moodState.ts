@@ -159,8 +159,8 @@ export const DEFAULT_MOOD: MoodState = {
   // Phase 4-H — 기본은 약하게 켜기. 효과 즉시 보임 (벽돌 줄눈 깊이감).
   displacementScale: 0.015,
   geometrySegments: 64,
-  // Step 6 — 진규님 "빛 흐름" 의 핵심. 기본 ON.
-  bloomEnabled: true,
+  // Step 6 — postprocessing 전체 보류 (v3 호환 문제). 후속 백로그.
+  bloomEnabled: false,
   bloomIntensity: 0.4,
   bloomThreshold: 0.85,
   ssaoEnabled: false, // v3 NormalPass bug 로 임시 off — 후속 n8ao 교체 예정
