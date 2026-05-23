@@ -36,9 +36,24 @@ type Props = {
   onLiveMode: () => void;
 };
 
+/** 해상도별 dpr (대략적 — main 영역 크기 약 1280×900 기준 근사). */
+const RESOLUTION_DPR: Record<MoodState['snapshotResolution'], number> = {
+  fhd: 1.5,  // ~1920×1080
+  '2k': 2.0, // ~2560×1440
+  '4k': 3.0, // ~3840×2160
+  '8k': 6.0, // ~7680×4320
+};
+const RESOLUTION_LABEL: Record<MoodState['snapshotResolution'], string> = {
+  fhd: 'FHD (1920×1080)',
+  '2k': '2K (2560×1440)',
+  '4k': '4K (3840×2160) ★',
+  '8k': '8K (7680×4320) — 무거움',
+};
+
 export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props) {
   const [samples, setSamples] = useState(0);
   const [busy, setBusy] = useState(true);
+  const [resolution, setResolution] = useState<MoodState['snapshotResolution']>(mood.snapshotResolution);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const w = dims.w_mm * MM;
@@ -48,6 +63,7 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
   const camTarget: [number, number, number] = [0, h * 0.5, 0];
 
   const progress = Math.min((samples / mood.pathTracerMaxSamples) * 100, 100);
+  const dpr = RESOLUTION_DPR[resolution];
 
   const handleDownload = () => {
     if (!canvasRef.current) return;
@@ -91,6 +107,24 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
             </div>
           </div>
 
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">출력 해상도 (dpr {dpr}×)</div>
+            <select
+              value={resolution}
+              onChange={(e) => {
+                setResolution(e.target.value as MoodState['snapshotResolution']);
+                setSamples(0); // 해상도 변경 = canvas remount = sample reset
+              }}
+              className="w-full px-2 py-1.5 text-sm bg-white text-slate-900 border border-slate-300 rounded"
+            >
+              {(['fhd', '2k', '4k', '8k'] as const).map((k) => (
+                <option key={k} value={k}>
+                  {RESOLUTION_LABEL[k]}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <button
             onClick={handleDownload}
             disabled={samples < 4}
@@ -108,7 +142,9 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
 
       <main className="flex-1 relative">
         <Canvas
+          key={resolution}  // 해상도 변경 시 Canvas remount → path tracer 재초기화
           shadows
+          dpr={dpr}
           camera={{ position: camPos, fov: 55, near: 0.01, far: 100 }}
           gl={{ antialias: true, preserveDrawingBuffer: true }}
           onCreated={({ gl }) => {

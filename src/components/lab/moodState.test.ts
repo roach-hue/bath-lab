@@ -50,7 +50,7 @@ describe('moodState', () => {
       'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',
       'toneMapping', 'exposure',
       // Step 7 path tracer
-      'viewMode', 'pathTracerMaxSamples', 'pathTracerBounces',
+      'viewMode', 'pathTracerMaxSamples', 'pathTracerBounces', 'snapshotResolution',
     ];
     for (const k of requiredKeys) {
       expect(DEFAULT_MOOD).toHaveProperty(k);

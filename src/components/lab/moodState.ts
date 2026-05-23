@@ -123,6 +123,9 @@ export type MoodState = {
   viewMode: 'live' | 'snapshot';
   pathTracerMaxSamples: number; // 32~512, 누적 sample 수 (높을수록 노이즈 ↓)
   pathTracerBounces: number; // 2~10
+  /** 스냅샷 출력 해상도. dpr 동적 변경 → canvas internal pixel ↑.
+   *  fhd 1920×1080 / 2k 2560×1440 / 4k 3840×2160 / 8k 7680×4320 */
+  snapshotResolution: 'fhd' | '2k' | '4k' | '8k';
 };
 
 export const DEFAULT_MOOD: MoodState = {
@@ -202,4 +205,5 @@ export const DEFAULT_MOOD: MoodState = {
   viewMode: 'live',
   pathTracerMaxSamples: 64,
   pathTracerBounces: 4,
+  snapshotResolution: '4k', // 시안 표준
 };
