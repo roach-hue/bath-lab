@@ -206,19 +206,33 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
-      <Section title="11 · 후처리 (Step 6 — 보류)">
-        <div className="space-y-3 border-l-2 border-slate-200 pl-3 opacity-60">
-          <p className="text-xs text-amber-700 leading-snug">
-            @react-three/postprocessing v3 + r3f 8 호환 문제로 Step 6 전체 보류.
-          </p>
-          <ul className="text-[10px] text-slate-500 space-y-1 list-disc pl-4">
-            <li>Bloom — v3 mount 시 'undefined.length' 런타임 에러 → 검정 화면</li>
-            <li>SSAO — NormalPass bug (enableNormalPass 도 작동 X)</li>
-            <li>SSR — v3 미export</li>
-          </ul>
-          <p className="text-[10px] text-slate-500">
-            후속: postprocessing v2 다운그레이드 또는 별도 패키지 (n8ao + bloom-effect 등)
-          </p>
+      <Section title="11 · 후처리 (Step 6 ★ — Bloom + SSAO · 빛 흐름 핵심)">
+        <div className="space-y-3 border-l-2 border-red-200 pl-3">
+          <label className="flex items-center gap-2 text-xs text-slate-700">
+            <input
+              type="checkbox"
+              checked={state.bloomEnabled}
+              onChange={(e) => patch({ bloomEnabled: e.target.checked })}
+            />
+            Bloom (광원 발광감)
+          </label>
+          <Slider title="bloom intensity" value={state.bloomIntensity} min={0} max={3} step={0.05} onChange={(v) => patch({ bloomIntensity: v })} hint={`${state.bloomIntensity.toFixed(2)}`} />
+          <Slider title="bloom threshold (어디서부터 발광)" value={state.bloomThreshold} min={0} max={1} step={0.01} onChange={(v) => patch({ bloomThreshold: v })} hint={`${state.bloomThreshold.toFixed(2)}`} />
+          <label className="flex items-center gap-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
+            <input
+              type="checkbox"
+              checked={state.ssaoEnabled}
+              onChange={(e) => patch({ ssaoEnabled: e.target.checked })}
+            />
+            SSAO (모서리 어두움 — 공간감)
+          </label>
+          <Slider title="ssao intensity" value={state.ssaoIntensity} min={0} max={5} step={0.05} onChange={(v) => patch({ ssaoIntensity: v })} hint={`${state.ssaoIntensity.toFixed(2)}`} />
+          <Slider title="ssao radius" value={state.ssaoRadius} min={0.05} max={1} step={0.01} onChange={(v) => patch({ ssaoRadius: v })} hint={`${state.ssaoRadius.toFixed(2)}`} />
+          <div className="pt-2 border-t border-slate-100 opacity-50">
+            <div className="text-xs text-slate-500">
+              SSR (스크린 공간 반사) — <span className="text-amber-700">미지원 (별도 패키지, 백로그)</span>
+            </div>
+          </div>
         </div>
       </Section>
 

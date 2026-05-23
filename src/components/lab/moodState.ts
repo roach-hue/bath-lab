@@ -159,14 +159,14 @@ export const DEFAULT_MOOD: MoodState = {
   // Phase 4-H — 기본은 약하게 켜기. 효과 즉시 보임 (벽돌 줄눈 깊이감).
   displacementScale: 0.015,
   geometrySegments: 64,
-  // Step 6 — postprocessing 전체 보류 (v3 호환 문제). 후속 백로그.
-  bloomEnabled: false,
+  // Step 6 — postprocessing v2 다운그레이드 후 재활성. 진규님 "빛 흐름" 핵심.
+  bloomEnabled: true,
   bloomIntensity: 0.4,
   bloomThreshold: 0.85,
-  ssaoEnabled: false, // v3 NormalPass bug 로 임시 off — 후속 n8ao 교체 예정
+  ssaoEnabled: true, // v2 에서는 enableNormalPass 정상 동작
   ssaoIntensity: 1.0,
   ssaoRadius: 0.25,
-  ssrEnabled: false,  // SSR 은 GPU 부담 — 기본 OFF, 진규님이 켜면 활성
+  ssrEnabled: false, // 별도 패키지 필요 — 백로그
   ssrIntensity: 0.5,
   // Step 5 — SoftShadow + ContactShadow 기본 ON (즉시 효과 확인)
   softShadowEnabled: true,

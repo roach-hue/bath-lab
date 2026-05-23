@@ -8,10 +8,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, SoftShadows, ContactShadows } from '@react-three/drei';
-// Step 6 — EffectComposer/Bloom 통째로 제거.
-//   @react-three/postprocessing v3 + r3f 8 호환 문제 (NormalPass + mount 에러).
-//   증상: Cannot read properties of undefined (reading 'length') → WebGL Context Lost.
-//   후속: postprocessing v2 다운그레이드 또는 별도 effect 패키지 도입 (백로그).
+import { EffectComposer, Bloom, SSAO } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 
@@ -172,7 +169,38 @@ export default function MoodViewer({ dims, onBack }: Props) {
           />
 
           {/* Step 6 — postprocessing. Bloom 광원 발광 + SSAO 공간 AO + SSR 스크린 반사 */}
-          {/* Step 6 postprocessing 전체 비활성 — 위 import 주석 참조. 백로그. */}
+          {/* Step 6 — postprocessing v2 (다운그레이드 후 재활성). Bloom + SSAO. */}
+          {(mood.bloomEnabled || mood.ssaoEnabled) && (
+            <EffectComposer enableNormalPass={mood.ssaoEnabled} multisampling={0}>
+              <>
+                {mood.bloomEnabled && (
+                  <Bloom
+                    intensity={mood.bloomIntensity}
+                    luminanceThreshold={mood.bloomThreshold}
+                    luminanceSmoothing={0.4}
+                  />
+                )}
+                {mood.ssaoEnabled && (
+                  <SSAO
+                    intensity={mood.ssaoIntensity}
+                    radius={mood.ssaoRadius}
+                    samples={16}
+                    rings={4}
+                    luminanceInfluence={0.6}
+                    distanceThreshold={1.0}
+                    distanceFalloff={0.1}
+                    rangeThreshold={0.0005}
+                    rangeFalloff={0.001}
+                    worldDistanceThreshold={1.0}
+                    worldDistanceFalloff={1.0}
+                    worldProximityThreshold={1.0}
+                    worldProximityFalloff={1.0}
+                  />
+                )}
+                {/* SSR — v2 미export 동일. 백로그 (별도 패키지). */}
+              </>
+            </EffectComposer>
+          )}
         </Canvas>
 
         {/* 우측 하단 dims HUD */}
