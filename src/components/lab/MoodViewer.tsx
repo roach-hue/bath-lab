@@ -9,6 +9,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
 import * as THREE from 'three';
+import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
+
+// Step 4 — module 로드 시 1회 init. R3F + meshPhysical 와 호환.
+RectAreaLightUniformsLib.init();
 import BathRoom from './BathRoom';
 import MoodControls from './MoodControls';
 import { DEFAULT_MOOD, MoodState, HDR_URL } from './moodState';
@@ -66,6 +70,19 @@ export default function MoodViewer({ dims, onBack }: Props) {
             shadow-mapSize-width={1024}
             shadow-mapSize-height={1024}
           />
+
+          {/* Step 4 — rectAreaLight 면광원 (다운라이트). castShadow 미지원이라 spotLight 와 병용. */}
+          {mood.rectAreaEnabled && (
+            <RectAreaLight
+              x_mm={mood.rectAreaX_mm}
+              y_mm={mood.rectAreaY_mm}
+              z_mm={mood.rectAreaZ_mm}
+              width_mm={mood.rectAreaWidth_mm}
+              height_mm={mood.rectAreaHeight_mm}
+              color={mood.rectAreaColor}
+              intensity={mood.rectAreaIntensity}
+            />
+          )}
 
           {/* 화장실 공간 — Step 2 텍스쳐 + Step 3 physical + Phase 2 면별/anisotropy/envIntensity */}
           <BathRoom
@@ -137,6 +154,41 @@ export default function MoodViewer({ dims, onBack }: Props) {
         </div>
       </main>
     </div>
+  );
+}
+
+/** Step 4 — rectAreaLight. ref 통해 lookAt(0, 0, 0) 설정해 아래쪽 비추기. */
+function RectAreaLight({
+  x_mm,
+  y_mm,
+  z_mm,
+  width_mm,
+  height_mm,
+  color,
+  intensity,
+}: {
+  x_mm: number;
+  y_mm: number;
+  z_mm: number;
+  width_mm: number;
+  height_mm: number;
+  color: string;
+  intensity: number;
+}) {
+  const ref = useRef<THREE.RectAreaLight>(null);
+  useEffect(() => {
+    // 항상 공간 중심 (바닥) 을 향하게.
+    if (ref.current) ref.current.lookAt(0, 0, 0);
+  }, [x_mm, y_mm, z_mm]);
+  return (
+    <rectAreaLight
+      ref={ref}
+      position={[x_mm * MM, y_mm * MM, z_mm * MM]}
+      width={width_mm * MM}
+      height={height_mm * MM}
+      color={color}
+      intensity={intensity}
+    />
   );
 }
 

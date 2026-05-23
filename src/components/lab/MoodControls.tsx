@@ -206,6 +206,52 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
+      <Section title="9 · 면광원 다운라이트 (rectAreaLight — Step 4)">
+        <div className="space-y-3 border-l-2 border-yellow-200 pl-3">
+          <label className="flex items-center gap-2 text-xs text-slate-700">
+            <input
+              type="checkbox"
+              checked={state.rectAreaEnabled}
+              onChange={(e) => patch({ rectAreaEnabled: e.target.checked })}
+            />
+            면광원 ON/OFF
+          </label>
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">위치 (mm)</div>
+            <div className="grid grid-cols-3 gap-2">
+              <NumField label="X" value={state.rectAreaX_mm} onChange={(v) => patch({ rectAreaX_mm: v })} />
+              <NumField label="Y" value={state.rectAreaY_mm} onChange={(v) => patch({ rectAreaY_mm: v })} />
+              <NumField label="Z" value={state.rectAreaZ_mm} onChange={(v) => patch({ rectAreaZ_mm: v })} />
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">크기 (W×H mm)</div>
+            <div className="grid grid-cols-2 gap-2">
+              <NumField label="W" value={state.rectAreaWidth_mm} onChange={(v) => patch({ rectAreaWidth_mm: v })} />
+              <NumField label="H" value={state.rectAreaHeight_mm} onChange={(v) => patch({ rectAreaHeight_mm: v })} />
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">면광원 색</div>
+            <input
+              type="color"
+              value={state.rectAreaColor}
+              onChange={(e) => patch({ rectAreaColor: e.target.value })}
+              className="w-full h-8 rounded border border-slate-300 bg-white cursor-pointer"
+            />
+          </div>
+          <Slider
+            title="면광원 강도"
+            value={state.rectAreaIntensity}
+            min={0}
+            max={20}
+            step={0.1}
+            onChange={(v) => patch({ rectAreaIntensity: v })}
+            hint={`${state.rectAreaIntensity.toFixed(1)}`}
+          />
+        </div>
+      </Section>
+
       <Section title="3+++ · 진짜 울룩불룩 (Displacement — Phase 4 ★)">
         <div className="space-y-3 border-l-2 border-orange-200 pl-3">
           <Slider

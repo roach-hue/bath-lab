@@ -81,6 +81,15 @@ export type MoodState = {
   // Phase 4-H — Displacement (진짜 vertex 변형, 울룩불룩)
   displacementScale: number; // 보통 0 ~ 0.05 (m 단위). 0 = 효과 X.
   geometrySegments: 16 | 32 | 64 | 128; // vertex 분할 수. 높을수록 부드러운 디테일
+  // Step 4 — rectAreaLight (면광원, 다운라이트/거울조명 자연스러움)
+  rectAreaEnabled: boolean;
+  rectAreaX_mm: number;
+  rectAreaY_mm: number;
+  rectAreaZ_mm: number;
+  rectAreaWidth_mm: number;
+  rectAreaHeight_mm: number;
+  rectAreaColor: string;
+  rectAreaIntensity: number;
   // 환경맵 (preset OR hdr 파일)
   env: EnvSelection;
   // 조명
@@ -133,6 +142,15 @@ export const DEFAULT_MOOD: MoodState = {
   // Phase 4-H — 기본은 약하게 켜기. 효과 즉시 보임 (벽돌 줄눈 깊이감).
   displacementScale: 0.015,
   geometrySegments: 64,
+  // Step 4 — 천장 중앙 다운라이트 (600×600mm 면광원)
+  rectAreaEnabled: true,
+  rectAreaX_mm: 0,
+  rectAreaY_mm: 2380, // 천장 거의 닿게
+  rectAreaZ_mm: 0,
+  rectAreaWidth_mm: 600,
+  rectAreaHeight_mm: 600,
+  rectAreaColor: '#fff2d6',
+  rectAreaIntensity: 4.0,
   env: { source: 'hdr', key: 'studio_small_03_2k' },
   ambientIntensity: 0.6,
   spotX_mm: 0,

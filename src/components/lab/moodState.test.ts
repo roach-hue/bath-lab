@@ -35,6 +35,9 @@ describe('moodState', () => {
       'reflectorMixBlur', 'reflectorRoughness', 'reflectorResolution',
       // Phase 4-H displacement
       'displacementScale', 'geometrySegments',
+      // Step 4 rectArea
+      'rectAreaEnabled', 'rectAreaX_mm', 'rectAreaY_mm', 'rectAreaZ_mm',
+      'rectAreaWidth_mm', 'rectAreaHeight_mm', 'rectAreaColor', 'rectAreaIntensity',
       'env',
       'ambientIntensity',
       'spotX_mm', 'spotY_mm', 'spotZ_mm', 'spotColor', 'spotIntensity',
