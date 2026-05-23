@@ -32,9 +32,9 @@ const ENV_PRESETS: EnvBuiltinPreset[] = [
 ];
 
 const ENV_HDRS: EnvHdrFile[] = [
-  'studio_small_03_1k',
-  'lebombo_1k',
-  'kloofendal_48d_partly_cloudy_puresky_1k',
+  'studio_small_03_2k',
+  'lebombo_2k',
+  'kloofendal_48d_partly_cloudy_puresky_2k',
 ];
 
 type Props = {

@@ -46,15 +46,15 @@ describe('moodState', () => {
     expect(DEFAULT_MOOD.exposure).toBeGreaterThan(0);
   });
 
-  it('HDR_URL 의 모든 키가 EnvHdrFile union 과 정합', () => {
+  it('HDR_URL 의 모든 키가 EnvHdrFile union 과 정합 (Phase 1 — 2k)', () => {
     const keys: EnvHdrFile[] = [
-      'studio_small_03_1k',
-      'lebombo_1k',
-      'kloofendal_48d_partly_cloudy_puresky_1k',
+      'studio_small_03_2k',
+      'lebombo_2k',
+      'kloofendal_48d_partly_cloudy_puresky_2k',
     ];
     for (const k of keys) {
       expect(HDR_URL).toHaveProperty(k);
-      expect(HDR_URL[k]).toMatch(/^\/hdr\/.+\.hdr$/);
+      expect(HDR_URL[k]).toMatch(/^\/hdr\/.+_2k\.hdr$/);
     }
   });
 

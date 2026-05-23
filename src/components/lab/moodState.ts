@@ -17,11 +17,12 @@ export type EnvBuiltinPreset =
   | 'sunset'
   | 'warehouse';
 
-/** Step 1 — 외부 .hdr 실파일 키. frontend/public/hdr/ 에 위치. */
+/** Step 1 — 외부 .hdr 실파일 키. frontend/public/hdr/ 에 위치.
+ *  Phase 1 — 1k → 2k 해상도 업그레이드 (반사 디테일 ↑). */
 export type EnvHdrFile =
-  | 'studio_small_03_1k'
-  | 'lebombo_1k'
-  | 'kloofendal_48d_partly_cloudy_puresky_1k';
+  | 'studio_small_03_2k'
+  | 'lebombo_2k'
+  | 'kloofendal_48d_partly_cloudy_puresky_2k';
 
 /** 환경맵 선택 — 내장 preset 또는 외부 .hdr 파일.
  *  source: 'preset' 일 때 key 는 EnvBuiltinPreset, 'hdr' 일 때 EnvHdrFile. */
@@ -29,12 +30,12 @@ export type EnvSelection =
   | { source: 'preset'; key: EnvBuiltinPreset }
   | { source: 'hdr'; key: EnvHdrFile };
 
-/** .hdr 파일 URL 매핑 (Vite public 경로 기준). */
+/** .hdr 파일 URL 매핑 (Vite public 경로 기준). 2k 해상도. */
 export const HDR_URL: Record<EnvHdrFile, string> = {
-  studio_small_03_1k: '/hdr/studio_small_03_1k.hdr',
-  lebombo_1k: '/hdr/lebombo_1k.hdr',
-  kloofendal_48d_partly_cloudy_puresky_1k:
-    '/hdr/kloofendal_48d_partly_cloudy_puresky_1k.hdr',
+  studio_small_03_2k: '/hdr/studio_small_03_2k.hdr',
+  lebombo_2k: '/hdr/lebombo_2k.hdr',
+  kloofendal_48d_partly_cloudy_puresky_2k:
+    '/hdr/kloofendal_48d_partly_cloudy_puresky_2k.hdr',
 };
 
 export type ToneMappingMode = 'linear' | 'aces';
@@ -89,7 +90,7 @@ export const DEFAULT_MOOD: MoodState = {
   transmission: 0.0,
   thickness: 0.5,
   ior: 1.5,
-  env: { source: 'hdr', key: 'studio_small_03_1k' },
+  env: { source: 'hdr', key: 'studio_small_03_2k' },
   ambientIntensity: 0.6,
   spotX_mm: 0,
   spotY_mm: 2200,

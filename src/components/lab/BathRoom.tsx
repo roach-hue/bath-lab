@@ -18,6 +18,7 @@
  */
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
+import { useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import {
   TEXTURE_SETS,
@@ -151,21 +152,26 @@ function TexturedFaceMaterial({
     roughnessMap: set.rough,
     aoMap: set.ao,
   });
+  const { gl } = useThree();
 
-  // tiling repeat 설정 + colorSpace 정합 (diff 만 sRGB, 나머지는 linear)
+  // tiling repeat 설정 + colorSpace 정합 (diff 만 sRGB, 나머지는 linear) + anisotropic filtering
   useEffect(() => {
+    // Phase 1 — anisotropic filtering 으로 비스듬한 시점에서 텍스쳐 흐릿함 제거.
+    // 대부분 GPU 16x 지원. capabilities.getMaxAnisotropy() 반환값 사용.
+    const maxAniso = gl.capabilities.getMaxAnisotropy();
     Object.values(textures).forEach((t) => {
       if (!t) return;
       t.wrapS = THREE.RepeatWrapping;
       t.wrapT = THREE.RepeatWrapping;
       t.repeat.set(repeat, repeat);
+      t.anisotropy = maxAniso;
       t.needsUpdate = true;
     });
     if (textures.map) textures.map.colorSpace = THREE.SRGBColorSpace;
     if (textures.normalMap) textures.normalMap.colorSpace = THREE.NoColorSpace;
     if (textures.roughnessMap) textures.roughnessMap.colorSpace = THREE.NoColorSpace;
     if (textures.aoMap) textures.aoMap.colorSpace = THREE.NoColorSpace;
-  }, [textures, repeat]);
+  }, [textures, repeat, gl]);
 
   return (
     <meshPhysicalMaterial
