@@ -116,9 +116,10 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
                 setSamples(0); // 해상도 변경 = canvas remount = sample reset
               }}
               className="w-full px-2 py-1.5 text-sm bg-white text-slate-900 border border-slate-300 rounded"
+              style={{ colorScheme: 'light' }}
             >
               {(['fhd', '2k', '4k', '8k'] as const).map((k) => (
-                <option key={k} value={k}>
+                <option key={k} value={k} style={{ background: 'white', color: '#0f172a' }}>
                   {RESOLUTION_LABEL[k]}
                 </option>
               ))}

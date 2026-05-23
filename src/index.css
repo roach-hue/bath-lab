@@ -12,3 +12,13 @@ body,
   background: #f8fafc; /* slate-50 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* OS 다크모드에서 native select dropdown 이 검정 위 검정으로 깨지는 문제 회피 */
+select,
+option {
+  color-scheme: light;
+}
+option {
+  background-color: white;
+  color: #0f172a;
+}
