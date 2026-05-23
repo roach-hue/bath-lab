@@ -17,6 +17,7 @@ import type {
   EnvHdrFile,
 } from './moodState';
 import { TEXTURE_OPTIONS, type TextureSetKey } from './textureSets';
+import { PRESET_LABEL, WALL_LABEL } from './cameraPresets';
 
 const ENV_PRESETS: EnvBuiltinPreset[] = [
   'apartment',
@@ -57,6 +58,35 @@ export default function MoodControls({ state, setState, onBack }: Props) {
           ← 수치
         </button>
       </div>
+
+      <Section title="★ 카메라 시점 + 입구">
+        <div className="space-y-2 border-l-2 border-slate-300 pl-3">
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">입구 위치 (시안 기준점)</div>
+            <select
+              value={state.entranceWall}
+              onChange={(e) => patch({ entranceWall: e.target.value as MoodState['entranceWall'] })}
+              className="w-full px-2 py-1.5 text-sm bg-white text-slate-900 border border-slate-300 rounded"
+            >
+              {(['front', 'back', 'left', 'right'] as const).map((w) => (
+                <option key={w} value={w}>{WALL_LABEL[w]}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <div className="text-xs font-medium text-slate-700 mb-1.5">카메라 시점</div>
+            <select
+              value={state.cameraPreset}
+              onChange={(e) => patch({ cameraPreset: e.target.value as MoodState['cameraPreset'] })}
+              className="w-full px-2 py-1.5 text-sm bg-white text-slate-900 border border-slate-300 rounded"
+            >
+              {(['corner', 'frontal', 'human', 'top'] as const).map((p) => (
+                <option key={p} value={p}>{PRESET_LABEL[p]}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </Section>
 
       <Section title="0 · 표면 질감 (PBR 텍스쳐 — 면별)">
         <div className="space-y-2">

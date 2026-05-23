@@ -24,6 +24,7 @@ import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLigh
 import BathRoom from './BathRoom';
 import { MoodState, HDR_URL } from './moodState';
 import { BathDimensions } from './DimensionForm';
+import { computeCameraView } from './cameraPresets';
 
 RectAreaLightUniformsLib.init();
 
@@ -59,8 +60,10 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
   const w = dims.w_mm * MM;
   const d = dims.d_mm * MM;
   const h = dims.h_mm * MM;
-  const camPos: [number, number, number] = [w * 0.25, h * 0.55, d * 0.25];
-  const camTarget: [number, number, number] = [0, h * 0.5, 0];
+  const cam = computeCameraView(mood.cameraPreset, mood.entranceWall, dims.w_mm, dims.d_mm, dims.h_mm);
+  const camPos = cam.position;
+  const camTarget = cam.target;
+  const camFov = cam.fov;
 
   const progress = Math.min((samples / mood.pathTracerMaxSamples) * 100, 100);
   const dpr = RESOLUTION_DPR[resolution];
@@ -143,10 +146,10 @@ export default function SnapshotViewer({ dims, mood, onBack, onLiveMode }: Props
 
       <main className="flex-1 relative">
         <Canvas
-          key={resolution}  // 해상도 변경 시 Canvas remount → path tracer 재초기화
+          key={`${resolution}-${mood.cameraPreset}-${mood.entranceWall}`}
           shadows
           dpr={dpr}
-          camera={{ position: camPos, fov: 55, near: 0.01, far: 100 }}
+          camera={{ position: camPos, fov: camFov, near: 0.01, far: 100 }}
           gl={{ antialias: true, preserveDrawingBuffer: true }}
           onCreated={({ gl }) => {
             canvasRef.current = gl.domElement;

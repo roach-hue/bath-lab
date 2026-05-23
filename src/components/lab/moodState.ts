@@ -126,6 +126,11 @@ export type MoodState = {
   /** 스냅샷 출력 해상도. dpr 동적 변경 → canvas internal pixel ↑.
    *  fhd 1920×1080 / 2k 2560×1440 / 4k 3840×2160 / 8k 7680×4320 */
   snapshotResolution: 'fhd' | '2k' | '4k' | '8k';
+  /** 입구 위치한 벽 (카메라 preset 의 기준 — "정면 샷" = 입구 반대편 등). */
+  entranceWall: 'front' | 'back' | 'left' | 'right';
+  /** 카메라 시점 preset. corner=한 모서리에서 안쪽, frontal=입구→안쪽 정면,
+   *  human=입구 정중앙 1.6m 사람 시점, top=부감 (천장 살짝 아래에서 아래로). */
+  cameraPreset: 'corner' | 'frontal' | 'human' | 'top';
 };
 
 export const DEFAULT_MOOD: MoodState = {
@@ -206,4 +211,6 @@ export const DEFAULT_MOOD: MoodState = {
   pathTracerMaxSamples: 64,
   pathTracerBounces: 4,
   snapshotResolution: '4k', // 시안 표준
+  entranceWall: 'front', // 기본 = -Z 방향 (앞 벽). 진규님 변경 가능.
+  cameraPreset: 'corner',
 };

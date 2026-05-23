@@ -18,6 +18,7 @@ import BathRoom from './BathRoom';
 import MoodControls from './MoodControls';
 import { MoodState, HDR_URL } from './moodState';
 import { BathDimensions } from './DimensionForm';
+import { computeCameraView } from './cameraPresets';
 
 const MM = 0.001;
 
@@ -35,9 +36,11 @@ export default function MoodViewer({ dims, mood, setMood, onBack, onSnapshot }: 
   const d = dims.d_mm * MM;
   const h = dims.h_mm * MM;
 
-  // 카메라 — 안쪽 한 모퉁이에서 중심 응시.
-  const camPos: [number, number, number] = [w * 0.25, h * 0.55, d * 0.25];
-  const camTarget: [number, number, number] = [0, h * 0.5, 0];
+  // 카메라 — preset + entranceWall 기준 동적 계산
+  const cam = computeCameraView(mood.cameraPreset, mood.entranceWall, dims.w_mm, dims.d_mm, dims.h_mm);
+  const camPos = cam.position;
+  const camTarget = cam.target;
+  const camFov = cam.fov;
 
   return (
     <div className="flex h-screen w-full bg-slate-900">
@@ -56,8 +59,9 @@ export default function MoodViewer({ dims, mood, setMood, onBack, onSnapshot }: 
       </aside>
       <main className="flex-1 relative">
         <Canvas
+          key={`${mood.cameraPreset}-${mood.entranceWall}`}
           shadows
-          camera={{ position: camPos, fov: 55, near: 0.01, far: 100 }}
+          camera={{ position: camPos, fov: camFov, near: 0.01, far: 100 }}
           gl={{ antialias: true }}
         >
           <ToneMappingSetter mode={mood.toneMapping} exposure={mood.exposure} />
