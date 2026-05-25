@@ -192,7 +192,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
           </optgroup>
         </select>
         <div className="mt-2">
-          <Slider title="환경맵 강도" value={state.envIntensity} min={0} max={3} step={0.05} onChange={(v) => patch({ envIntensity: v })} hint={`${state.envIntensity.toFixed(2)}`} />
+          <Slider title="주변 반사 강도 (광택 표면에만 영향)" value={state.envIntensity} min={0} max={3} step={0.05} onChange={(v) => patch({ envIntensity: v })} hint={`${state.envIntensity.toFixed(2)}`} />
         </div>
       </Section>
 
