@@ -300,7 +300,7 @@ export default function MoodControls({ state, setState, onBack }: Props) {
           <Slider title="Bloom 임계값 (어디부터 발광)" value={state.bloomThreshold} min={0} max={1} step={0.01} onChange={(v) => patch({ bloomThreshold: v })} hint={`${state.bloomThreshold.toFixed(2)}`} />
           <label className="flex items-center gap-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
             <input type="checkbox" checked={state.ssaoEnabled} onChange={(e) => patch({ ssaoEnabled: e.target.checked })} />
-            SSAO (모서리 어두움 — 공간감)
+            SSAO (모서리 / 구석 / 좁은 틈을 자연스럽게 어둡게)
           </label>
           <Slider title="SSAO 강도" value={state.ssaoIntensity} min={0} max={5} step={0.05} onChange={(v) => patch({ ssaoIntensity: v })} hint={`${state.ssaoIntensity.toFixed(2)}`} />
           <Slider title="SSAO 반경" value={state.ssaoRadius} min={0.05} max={1} step={0.01} onChange={(v) => patch({ ssaoRadius: v })} hint={`${state.ssaoRadius.toFixed(2)}`} />
