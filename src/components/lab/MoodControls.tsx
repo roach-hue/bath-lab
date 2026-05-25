@@ -128,17 +128,17 @@ export default function MoodControls({ state, setState, onBack }: Props) {
         />
       </Section>
 
-      <Section title="2 · 거칠기 + 금속성 (면별 — roughness/metalness)">
+      <Section title="2 · 표면 질감 (벽/바닥/천장 따로)">
         <div className="space-y-3 border-l-2 border-slate-200 pl-3">
           <div className="text-[10px] text-slate-500">[벽]</div>
-          <Slider title="거칠기" value={state.wallRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ wallRoughness: v })} hint={`${state.wallRoughness.toFixed(2)}`} />
-          <Slider title="금속성" value={state.wallMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ wallMetalness: v })} hint={`${state.wallMetalness.toFixed(2)}`} />
+          <Slider title="거칠기 (왼쪽=매트, 오른쪽=광택)" value={state.wallRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ wallRoughness: v })} hint={`${state.wallRoughness.toFixed(2)}`} />
+          <Slider title="금속 느낌 (왼쪽=일반 재질, 오른쪽=금속)" value={state.wallMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ wallMetalness: v })} hint={`${state.wallMetalness.toFixed(2)}`} />
           <div className="text-[10px] text-slate-500">[바닥]</div>
-          <Slider title="거칠기" value={state.floorRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ floorRoughness: v })} hint={`${state.floorRoughness.toFixed(2)}`} />
-          <Slider title="금속성" value={state.floorMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ floorMetalness: v })} hint={`${state.floorMetalness.toFixed(2)}`} />
+          <Slider title="거칠기 (왼쪽=매트, 오른쪽=광택)" value={state.floorRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ floorRoughness: v })} hint={`${state.floorRoughness.toFixed(2)}`} />
+          <Slider title="금속 느낌 (왼쪽=일반 재질, 오른쪽=금속)" value={state.floorMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ floorMetalness: v })} hint={`${state.floorMetalness.toFixed(2)}`} />
           <div className="text-[10px] text-slate-500">[천장]</div>
-          <Slider title="거칠기" value={state.ceilingRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ ceilingRoughness: v })} hint={`${state.ceilingRoughness.toFixed(2)}`} />
-          <Slider title="금속성" value={state.ceilingMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ ceilingMetalness: v })} hint={`${state.ceilingMetalness.toFixed(2)}`} />
+          <Slider title="거칠기 (왼쪽=매트, 오른쪽=광택)" value={state.ceilingRoughness} min={0} max={1} step={0.01} onChange={(v) => patch({ ceilingRoughness: v })} hint={`${state.ceilingRoughness.toFixed(2)}`} />
+          <Slider title="금속 느낌 (왼쪽=일반 재질, 오른쪽=금속)" value={state.ceilingMetalness} min={0} max={1} step={0.01} onChange={(v) => patch({ ceilingMetalness: v })} hint={`${state.ceilingMetalness.toFixed(2)}`} />
         </div>
       </Section>
 
